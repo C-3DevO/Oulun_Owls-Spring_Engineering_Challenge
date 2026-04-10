@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/cp3-dev0/Simulation/srsRAN_Project
+CMAKE_SOURCE_DIR = /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/cp3-dev0/Simulation/srsRAN_Project/build
+CMAKE_BINARY_DIR = /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -132,14 +132,14 @@ install/strip/fast: preinstall/fast
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/cp3-dev0/Simulation/srsRAN_Project/build/CMakeFiles /home/cp3-dev0/Simulation/srsRAN_Project/build/apps/units/flexible_o_du/split_7_2/helpers//CMakeFiles/progress.marks
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 apps/units/flexible_o_du/split_7_2/helpers/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/cp3-dev0/Simulation/srsRAN_Project/build/CMakeFiles 0
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/CMakeFiles /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/apps/units/flexible_o_du/split_7_2/helpers//CMakeFiles/progress.marks
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 apps/units/flexible_o_du/split_7_2/helpers/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 apps/units/flexible_o_du/split_7_2/helpers/clean
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 apps/units/flexible_o_du/split_7_2/helpers/clean
 .PHONY : clean
 
 # The main clean target
@@ -148,22 +148,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 apps/units/flexible_o_du/split_7_2/helpers/preinstall
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 apps/units/flexible_o_du/split_7_2/helpers/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 apps/units/flexible_o_du/split_7_2/helpers/preinstall
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 apps/units/flexible_o_du/split_7_2/helpers/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/rule:
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/rule
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/rule
 .PHONY : apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/rule
 
 # Convenience name for target.
@@ -172,7 +172,7 @@ srsran_split_7_2_app_unit_helpers: apps/units/flexible_o_du/split_7_2/helpers/CM
 
 # fast build rule for target.
 srsran_split_7_2_app_unit_helpers/fast:
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/build.make apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/build
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/build.make apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/build
 .PHONY : srsran_split_7_2_app_unit_helpers/fast
 
 ru_ofh_config_cli11_schema.o: ru_ofh_config_cli11_schema.cpp.o
@@ -180,7 +180,7 @@ ru_ofh_config_cli11_schema.o: ru_ofh_config_cli11_schema.cpp.o
 
 # target to build an object file
 ru_ofh_config_cli11_schema.cpp.o:
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/build.make apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/ru_ofh_config_cli11_schema.cpp.o
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/build.make apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/ru_ofh_config_cli11_schema.cpp.o
 .PHONY : ru_ofh_config_cli11_schema.cpp.o
 
 ru_ofh_config_cli11_schema.i: ru_ofh_config_cli11_schema.cpp.i
@@ -188,7 +188,7 @@ ru_ofh_config_cli11_schema.i: ru_ofh_config_cli11_schema.cpp.i
 
 # target to preprocess a source file
 ru_ofh_config_cli11_schema.cpp.i:
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/build.make apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/ru_ofh_config_cli11_schema.cpp.i
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/build.make apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/ru_ofh_config_cli11_schema.cpp.i
 .PHONY : ru_ofh_config_cli11_schema.cpp.i
 
 ru_ofh_config_cli11_schema.s: ru_ofh_config_cli11_schema.cpp.s
@@ -196,7 +196,7 @@ ru_ofh_config_cli11_schema.s: ru_ofh_config_cli11_schema.cpp.s
 
 # target to generate assembly for a file
 ru_ofh_config_cli11_schema.cpp.s:
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/build.make apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/ru_ofh_config_cli11_schema.cpp.s
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/build.make apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/ru_ofh_config_cli11_schema.cpp.s
 .PHONY : ru_ofh_config_cli11_schema.cpp.s
 
 ru_ofh_config_translator.o: ru_ofh_config_translator.cpp.o
@@ -204,7 +204,7 @@ ru_ofh_config_translator.o: ru_ofh_config_translator.cpp.o
 
 # target to build an object file
 ru_ofh_config_translator.cpp.o:
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/build.make apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/ru_ofh_config_translator.cpp.o
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/build.make apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/ru_ofh_config_translator.cpp.o
 .PHONY : ru_ofh_config_translator.cpp.o
 
 ru_ofh_config_translator.i: ru_ofh_config_translator.cpp.i
@@ -212,7 +212,7 @@ ru_ofh_config_translator.i: ru_ofh_config_translator.cpp.i
 
 # target to preprocess a source file
 ru_ofh_config_translator.cpp.i:
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/build.make apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/ru_ofh_config_translator.cpp.i
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/build.make apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/ru_ofh_config_translator.cpp.i
 .PHONY : ru_ofh_config_translator.cpp.i
 
 ru_ofh_config_translator.s: ru_ofh_config_translator.cpp.s
@@ -220,7 +220,7 @@ ru_ofh_config_translator.s: ru_ofh_config_translator.cpp.s
 
 # target to generate assembly for a file
 ru_ofh_config_translator.cpp.s:
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/build.make apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/ru_ofh_config_translator.cpp.s
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/build.make apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/ru_ofh_config_translator.cpp.s
 .PHONY : ru_ofh_config_translator.cpp.s
 
 ru_ofh_config_validator.o: ru_ofh_config_validator.cpp.o
@@ -228,7 +228,7 @@ ru_ofh_config_validator.o: ru_ofh_config_validator.cpp.o
 
 # target to build an object file
 ru_ofh_config_validator.cpp.o:
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/build.make apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/ru_ofh_config_validator.cpp.o
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/build.make apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/ru_ofh_config_validator.cpp.o
 .PHONY : ru_ofh_config_validator.cpp.o
 
 ru_ofh_config_validator.i: ru_ofh_config_validator.cpp.i
@@ -236,7 +236,7 @@ ru_ofh_config_validator.i: ru_ofh_config_validator.cpp.i
 
 # target to preprocess a source file
 ru_ofh_config_validator.cpp.i:
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/build.make apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/ru_ofh_config_validator.cpp.i
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/build.make apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/ru_ofh_config_validator.cpp.i
 .PHONY : ru_ofh_config_validator.cpp.i
 
 ru_ofh_config_validator.s: ru_ofh_config_validator.cpp.s
@@ -244,7 +244,7 @@ ru_ofh_config_validator.s: ru_ofh_config_validator.cpp.s
 
 # target to generate assembly for a file
 ru_ofh_config_validator.cpp.s:
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/build.make apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/ru_ofh_config_validator.cpp.s
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/build.make apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/ru_ofh_config_validator.cpp.s
 .PHONY : ru_ofh_config_validator.cpp.s
 
 ru_ofh_config_yaml_writer.o: ru_ofh_config_yaml_writer.cpp.o
@@ -252,7 +252,7 @@ ru_ofh_config_yaml_writer.o: ru_ofh_config_yaml_writer.cpp.o
 
 # target to build an object file
 ru_ofh_config_yaml_writer.cpp.o:
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/build.make apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/ru_ofh_config_yaml_writer.cpp.o
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/build.make apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/ru_ofh_config_yaml_writer.cpp.o
 .PHONY : ru_ofh_config_yaml_writer.cpp.o
 
 ru_ofh_config_yaml_writer.i: ru_ofh_config_yaml_writer.cpp.i
@@ -260,7 +260,7 @@ ru_ofh_config_yaml_writer.i: ru_ofh_config_yaml_writer.cpp.i
 
 # target to preprocess a source file
 ru_ofh_config_yaml_writer.cpp.i:
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/build.make apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/ru_ofh_config_yaml_writer.cpp.i
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/build.make apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/ru_ofh_config_yaml_writer.cpp.i
 .PHONY : ru_ofh_config_yaml_writer.cpp.i
 
 ru_ofh_config_yaml_writer.s: ru_ofh_config_yaml_writer.cpp.s
@@ -268,7 +268,7 @@ ru_ofh_config_yaml_writer.s: ru_ofh_config_yaml_writer.cpp.s
 
 # target to generate assembly for a file
 ru_ofh_config_yaml_writer.cpp.s:
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/build.make apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/ru_ofh_config_yaml_writer.cpp.s
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/build.make apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/ru_ofh_config_yaml_writer.cpp.s
 .PHONY : ru_ofh_config_yaml_writer.cpp.s
 
 ru_ofh_factories.o: ru_ofh_factories.cpp.o
@@ -276,7 +276,7 @@ ru_ofh_factories.o: ru_ofh_factories.cpp.o
 
 # target to build an object file
 ru_ofh_factories.cpp.o:
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/build.make apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/ru_ofh_factories.cpp.o
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/build.make apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/ru_ofh_factories.cpp.o
 .PHONY : ru_ofh_factories.cpp.o
 
 ru_ofh_factories.i: ru_ofh_factories.cpp.i
@@ -284,7 +284,7 @@ ru_ofh_factories.i: ru_ofh_factories.cpp.i
 
 # target to preprocess a source file
 ru_ofh_factories.cpp.i:
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/build.make apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/ru_ofh_factories.cpp.i
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/build.make apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/ru_ofh_factories.cpp.i
 .PHONY : ru_ofh_factories.cpp.i
 
 ru_ofh_factories.s: ru_ofh_factories.cpp.s
@@ -292,7 +292,7 @@ ru_ofh_factories.s: ru_ofh_factories.cpp.s
 
 # target to generate assembly for a file
 ru_ofh_factories.cpp.s:
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/build.make apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/ru_ofh_factories.cpp.s
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build && $(MAKE) $(MAKESILENT) -f apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/build.make apps/units/flexible_o_du/split_7_2/helpers/CMakeFiles/srsran_split_7_2_app_unit_helpers.dir/ru_ofh_factories.cpp.s
 .PHONY : ru_ofh_factories.cpp.s
 
 # Help Target
@@ -334,6 +334,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/cp3-dev0/Simulation/srsRAN_Project
+CMAKE_SOURCE_DIR = /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/cp3-dev0/Simulation/srsRAN_Project/build
+CMAKE_BINARY_DIR = /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build
 
 # Utility rule file for all_srsran_headers.
 
@@ -78,6 +78,6 @@ CMakeFiles/all_srsran_headers.dir/clean:
 .PHONY : CMakeFiles/all_srsran_headers.dir/clean
 
 CMakeFiles/all_srsran_headers.dir/depend:
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cp3-dev0/Simulation/srsRAN_Project /home/cp3-dev0/Simulation/srsRAN_Project /home/cp3-dev0/Simulation/srsRAN_Project/build /home/cp3-dev0/Simulation/srsRAN_Project/build /home/cp3-dev0/Simulation/srsRAN_Project/build/CMakeFiles/all_srsran_headers.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/CMakeFiles/all_srsran_headers.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/all_srsran_headers.dir/depend
 

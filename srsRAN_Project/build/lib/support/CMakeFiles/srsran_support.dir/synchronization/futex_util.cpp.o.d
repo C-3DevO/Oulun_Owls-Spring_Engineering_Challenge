@@ -1,7 +1,7 @@
 lib/support/CMakeFiles/srsran_support.dir/synchronization/futex_util.cpp.o: \
- /home/cp3-dev0/Simulation/srsRAN_Project/lib/support/synchronization/futex_util.cpp \
+ /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/lib/support/synchronization/futex_util.cpp \
  /usr/include/stdc-predef.h \
- /home/cp3-dev0/Simulation/srsRAN_Project/include/srsran/support/synchronization/futex_util.h \
+ /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/include/srsran/support/synchronization/futex_util.h \
  /usr/include/c++/11/atomic /usr/include/c++/11/bits/atomic_base.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \

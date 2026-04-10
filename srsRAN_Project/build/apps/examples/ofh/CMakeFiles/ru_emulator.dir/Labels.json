@@ -2,19 +2,19 @@
 	"sources" : 
 	[
 		{
-			"file" : "/home/cp3-dev0/Simulation/srsRAN_Project/apps/examples/ofh/ru_emulator_cli11_schema.cpp"
+			"file" : "/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/apps/examples/ofh/ru_emulator_cli11_schema.cpp"
 		},
 		{
-			"file" : "/home/cp3-dev0/Simulation/srsRAN_Project/apps/examples/ofh/ru_emulator.cpp"
+			"file" : "/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/apps/examples/ofh/ru_emulator.cpp"
 		},
 		{
-			"file" : "/home/cp3-dev0/Simulation/srsRAN_Project/apps/examples/ofh/ru_emulator_rx_window_checker.cpp"
+			"file" : "/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/apps/examples/ofh/ru_emulator_rx_window_checker.cpp"
 		},
 		{
-			"file" : "/home/cp3-dev0/Simulation/srsRAN_Project/apps/examples/ofh/ru_emulator_socket_transceiver.cpp"
+			"file" : "/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/apps/examples/ofh/ru_emulator_socket_transceiver.cpp"
 		},
 		{
-			"file" : "/home/cp3-dev0/Simulation/srsRAN_Project/apps/examples/ofh/ru_emulator_timing_notifier.cpp"
+			"file" : "/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/apps/examples/ofh/ru_emulator_timing_notifier.cpp"
 		}
 	],
 	"target" : 

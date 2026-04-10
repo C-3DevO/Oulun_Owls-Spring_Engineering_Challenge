@@ -8,14 +8,14 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/cp3-dev0/Simulation/srsRAN_Project/lib/asn1/asn1_utils.cpp" "lib/asn1/CMakeFiles/asn1_utils.dir/asn1_utils.cpp.o" "gcc" "lib/asn1/CMakeFiles/asn1_utils.dir/asn1_utils.cpp.o.d"
+  "/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/lib/asn1/asn1_utils.cpp" "lib/asn1/CMakeFiles/asn1_utils.dir/asn1_utils.cpp.o" "gcc" "lib/asn1/CMakeFiles/asn1_utils.dir/asn1_utils.cpp.o.d"
   )
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
-  "/home/cp3-dev0/Simulation/srsRAN_Project/build/lib/srslog/CMakeFiles/srslog.dir/DependInfo.cmake"
-  "/home/cp3-dev0/Simulation/srsRAN_Project/build/lib/support/CMakeFiles/srsran_support.dir/DependInfo.cmake"
-  "/home/cp3-dev0/Simulation/srsRAN_Project/build/external/fmt/CMakeFiles/fmt.dir/DependInfo.cmake"
+  "/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/lib/srslog/CMakeFiles/srslog.dir/DependInfo.cmake"
+  "/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/lib/support/CMakeFiles/srsran_support.dir/DependInfo.cmake"
+  "/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/external/fmt/CMakeFiles/fmt.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.

@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = -DASSERTS_ENABLED -DBACKWARD_HAS_BACKTRACE=0 -DBACKWARD_HAS_BACKTRACE_SYMBOL=1 -DBACKWARD_HAS_BFD=0 -DBACKWARD_HAS_DW=0 -DBACKWARD_HAS_DWARF=0 -DBACKWARD_HAS_LIBUNWIND=0 -DBACKWARD_HAS_UNWIND=1
 
-CXX_INCLUDES = -I/home/cp3-dev0/Simulation/srsRAN_Project/include -I/home/cp3-dev0/Simulation/srsRAN_Project/external/fmt/include -I/home/cp3-dev0/Simulation/srsRAN_Project/external -I/home/cp3-dev0/Simulation/srsRAN_Project/cmake/modules -I/home/cp3-dev0/Simulation/srsRAN_Project
+CXX_INCLUDES = -I/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/include -I/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/external/fmt/include -I/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/external -I/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/cmake/modules -I/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project
 
 CXX_FLAGS =  -Wall -Werror -Wno-error=stringop-overflow -Wnon-virtual-dtor -Wsuggest-override -Wshadow -Wextra-semi -fno-rtti -Wno-maybe-uninitialized -march=native -mtune=generic -march=native -mtune=generic -O3 -DNDEBUG -fno-trapping-math -fno-math-errno -DBUILD_TYPE_RELEASE -std=gnu++17
 

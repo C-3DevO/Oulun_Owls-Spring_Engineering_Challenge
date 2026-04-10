@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/cp3-dev0/Simulation/srsRAN_Project
+CMAKE_SOURCE_DIR = /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/cp3-dev0/Simulation/srsRAN_Project/build
+CMAKE_BINARY_DIR = /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build
 
 # Utility rule file for gen_build_info.
 
@@ -67,7 +67,7 @@ include lib/support/versioning/CMakeFiles/gen_build_info.dir/compiler_depend.mak
 include lib/support/versioning/CMakeFiles/gen_build_info.dir/progress.make
 
 lib/support/versioning/CMakeFiles/gen_build_info:
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build/lib/support/versioning && cmake -P /home/cp3-dev0/Simulation/srsRAN_Project/build/build_info.cmake
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/lib/support/versioning && cmake -P /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/build_info.cmake
 
 gen_build_info: lib/support/versioning/CMakeFiles/gen_build_info
 gen_build_info: lib/support/versioning/CMakeFiles/gen_build_info.dir/build.make
@@ -78,10 +78,10 @@ lib/support/versioning/CMakeFiles/gen_build_info.dir/build: gen_build_info
 .PHONY : lib/support/versioning/CMakeFiles/gen_build_info.dir/build
 
 lib/support/versioning/CMakeFiles/gen_build_info.dir/clean:
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build/lib/support/versioning && $(CMAKE_COMMAND) -P CMakeFiles/gen_build_info.dir/cmake_clean.cmake
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/lib/support/versioning && $(CMAKE_COMMAND) -P CMakeFiles/gen_build_info.dir/cmake_clean.cmake
 .PHONY : lib/support/versioning/CMakeFiles/gen_build_info.dir/clean
 
 lib/support/versioning/CMakeFiles/gen_build_info.dir/depend:
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cp3-dev0/Simulation/srsRAN_Project /home/cp3-dev0/Simulation/srsRAN_Project/lib/support/versioning /home/cp3-dev0/Simulation/srsRAN_Project/build /home/cp3-dev0/Simulation/srsRAN_Project/build/lib/support/versioning /home/cp3-dev0/Simulation/srsRAN_Project/build/lib/support/versioning/CMakeFiles/gen_build_info.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/lib/support/versioning /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/lib/support/versioning /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/lib/support/versioning/CMakeFiles/gen_build_info.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : lib/support/versioning/CMakeFiles/gen_build_info.dir/depend
 

@@ -1,4 +1,4 @@
-# Install script for directory: /home/cp3-dev0/Simulation/srsRAN_Project/apps/units/flexible_o_du/o_du_low
+# Install script for directory: /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/apps/units/flexible_o_du/o_du_low
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

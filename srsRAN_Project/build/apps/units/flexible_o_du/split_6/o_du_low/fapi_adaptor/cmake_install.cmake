@@ -1,4 +1,4 @@
-# Install script for directory: /home/cp3-dev0/Simulation/srsRAN_Project/apps/units/flexible_o_du/split_6/o_du_low/fapi_adaptor
+# Install script for directory: /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/apps/units/flexible_o_du/split_6/o_du_low/fapi_adaptor
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

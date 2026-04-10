@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = -DASSERTS_ENABLED
 
-CXX_INCLUDES = -I/home/cp3-dev0/Simulation/srsRAN_Project/include -I/home/cp3-dev0/Simulation/srsRAN_Project/external/fmt/include -I/home/cp3-dev0/Simulation/srsRAN_Project/external -I/home/cp3-dev0/Simulation/srsRAN_Project/lib/e1ap/cu_cp/..
+CXX_INCLUDES = -I/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/include -I/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/external/fmt/include -I/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/external -I/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/lib/e1ap/cu_cp/..
 
 CXX_FLAGS =  -Wall -Werror -Wno-error=stringop-overflow -Wnon-virtual-dtor -Wsuggest-override -Wshadow -Wextra-semi -fno-rtti -Wno-maybe-uninitialized -march=native -mtune=generic -march=native -mtune=generic -O3 -DNDEBUG -fno-trapping-math -fno-math-errno -DBUILD_TYPE_RELEASE -std=gnu++17
 

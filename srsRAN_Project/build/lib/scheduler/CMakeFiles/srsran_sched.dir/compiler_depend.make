@@ -3500,7 +3500,14 @@ lib/scheduler/CMakeFiles/srsran_sched.dir/policy/scheduler_time_rr.cpp.o: ../lib
   ../include/srsran/scheduler/scheduler_slot_handler.h \
   ../include/srsran/scheduler/scheduler_sys_info_handler.h \
   ../include/srsran/adt/ring_buffer.h \
-  ../include/srsran/adt/detail/type_storage.h
+  ../include/srsran/adt/detail/type_storage.h \
+  ../lib/scheduler/support/csi_report_helpers.h \
+  /usr/include/c++/11/fstream \
+  /usr/include/c++/11/bits/codecvt.h \
+  /usr/include/x86_64-linux-gnu/c++/11/bits/basic_file.h \
+  /usr/include/x86_64-linux-gnu/c++/11/bits/c++io.h \
+  /usr/include/c++/11/bits/fstream.tcc \
+  /usr/include/c++/11/iostream
 
 lib/scheduler/CMakeFiles/srsran_sched.dir/pucch_scheduling/pucch_allocator_helpers.cpp.o: ../lib/scheduler/pucch_scheduling/pucch_allocator_helpers.cpp \
   /usr/include/stdc-predef.h \

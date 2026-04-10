@@ -1404,7 +1404,7 @@ lib/phy/upper/channel_modulation/CMakeFiles/srsran_channel_modulation.dir/demodu
   /usr/include/inttypes.h \
   ../include/srsran/srsvec/type_traits.h \
   ../lib/phy/upper/channel_modulation/demodulation_mapper_intervals.h \
-  ../lib/phy/upper/channel_modulation/avx512_helpers.h \
+  ../lib/phy/upper/channel_modulation/avx2_helpers.h \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/immintrin.h \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/x86gprintrin.h \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/ia32intrin.h \
@@ -1489,8 +1489,7 @@ lib/phy/upper/channel_modulation/CMakeFiles/srsran_channel_modulation.dir/demodu
   /usr/lib/gcc/x86_64-linux-gnu/11/include/amxint8intrin.h \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/amxbf16intrin.h \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/prfchwintrin.h \
-  /usr/lib/gcc/x86_64-linux-gnu/11/include/keylockerintrin.h \
-  ../lib/phy/upper/channel_modulation/avx2_helpers.h
+  /usr/lib/gcc/x86_64-linux-gnu/11/include/keylockerintrin.h
 
 lib/phy/upper/channel_modulation/CMakeFiles/srsran_channel_modulation.dir/demodulation_mapper_qam64.cpp.o: ../lib/phy/upper/channel_modulation/demodulation_mapper_qam64.cpp \
   /usr/include/stdc-predef.h \
@@ -1816,7 +1815,7 @@ lib/phy/upper/channel_modulation/CMakeFiles/srsran_channel_modulation.dir/demodu
   /usr/include/inttypes.h \
   ../include/srsran/srsvec/type_traits.h \
   ../lib/phy/upper/channel_modulation/demodulation_mapper_intervals.h \
-  ../lib/phy/upper/channel_modulation/avx512_helpers.h \
+  ../lib/phy/upper/channel_modulation/avx2_helpers.h \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/immintrin.h \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/x86gprintrin.h \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/ia32intrin.h \
@@ -1901,8 +1900,7 @@ lib/phy/upper/channel_modulation/CMakeFiles/srsran_channel_modulation.dir/demodu
   /usr/lib/gcc/x86_64-linux-gnu/11/include/amxint8intrin.h \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/amxbf16intrin.h \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/prfchwintrin.h \
-  /usr/lib/gcc/x86_64-linux-gnu/11/include/keylockerintrin.h \
-  ../lib/phy/upper/channel_modulation/avx2_helpers.h
+  /usr/lib/gcc/x86_64-linux-gnu/11/include/keylockerintrin.h
 
 lib/phy/upper/channel_modulation/CMakeFiles/srsran_channel_modulation.dir/demodulation_mapper_qpsk.cpp.o: ../lib/phy/upper/channel_modulation/demodulation_mapper_qpsk.cpp \
   /usr/include/stdc-predef.h \
@@ -3675,8 +3673,6 @@ lib/phy/upper/channel_modulation/CMakeFiles/srsran_channel_modulation.dir/modula
 /usr/include/c++/11/bits/shared_ptr.h:
 
 /usr/include/c++/11/bits/stl_construct.h:
-
-../lib/phy/upper/channel_modulation/avx512_helpers.h:
 
 /usr/include/c++/11/tr1/ell_integral.tcc:
 
