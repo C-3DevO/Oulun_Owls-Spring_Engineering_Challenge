@@ -716,17 +716,22 @@ float e2sm_kpm_du_meas_provider_impl::bytes_to_kbits(float value)
   constexpr unsigned nof_bits_per_byte = 8;
   return (nof_bits_per_byte * value / 1e3);
 }
-//**
+
 static unsigned scheduler_dl_kbps_from_metrics(const scheduler_ue_metrics& ue_metric)
 {
-  return ue_metric.dl_brate_kbps > 0.0 ? (unsigned)ue_metric.dl_brate_kbps : 0;
+  if (ue_metric.dl_brate_kbps <= 0.0) {
+    return 0;
+  }
+  return static_cast<unsigned>(ue_metric.dl_brate_kbps);
 }
 
 static unsigned scheduler_ul_kbps_from_metrics(const scheduler_ue_metrics& ue_metric)
 {
-  return ue_metric.ul_brate_kbps > 0.0 ? (unsigned)ue_metric.ul_brate_kbps : 0;
+  if (ue_metric.ul_brate_kbps <= 0.0) {
+    return 0;
+  }
+  return static_cast<unsigned>(ue_metric.ul_brate_kbps);
 }
-//**
 
 bool e2sm_kpm_du_meas_provider_impl::get_drb_dl_mean_throughput(const asn1::e2sm::label_info_list_l     label_info_list,
                                                                 const std::vector<asn1::e2sm::ue_id_c>& ues,
@@ -734,12 +739,6 @@ bool e2sm_kpm_du_meas_provider_impl::get_drb_dl_mean_throughput(const asn1::e2sm
                                                                 std::vector<asn1::e2sm::meas_record_item_c>& items)
 {
   bool meas_collected = false;
-  //**if (ue_aggr_rlc_metrics.empty()) {
-  //  return handle_no_meas_data_available(ues, items, asn1::e2sm::meas_record_item_c::types::options::real);
-  //}**
-  if (ue_aggr_rlc_metrics.empty() && last_ue_metrics.empty()) {
-   return handle_no_meas_data_available(ues, items, asn1::e2sm::meas_record_item_c::types::options::real);
-}
   if ((label_info_list.size() > 1 or
        (label_info_list.size() == 1 and not label_info_list[0].meas_label.no_label_present))) {
     logger.debug("Metric: DRB.UEThpDl supports only NO_LABEL label.");
@@ -747,10 +746,11 @@ bool e2sm_kpm_du_meas_provider_impl::get_drb_dl_mean_throughput(const asn1::e2sm
   }
   double                       seconds = 1;
   std::map<uint16_t, unsigned> ue_throughput;
+
+  // First try the original RLC-based throughput path.
   for (auto& ue : ue_aggr_rlc_metrics) {
     size_t num_pdu_bytes_with_segmentation;
     if (std::holds_alternative<rlc_um_tx_metrics_lower>(ue.second.front().tx.tx_low.mode_specific)) {
-      // get average from queue
       num_pdu_bytes_with_segmentation =
           std::accumulate(ue.second.begin(), ue.second.end(), 0, [](size_t sum, const rlc_metrics& metric) {
             auto& um = std::get<rlc_um_tx_metrics_lower>(metric.tx.tx_low.mode_specific);
@@ -767,44 +767,187 @@ bool e2sm_kpm_du_meas_provider_impl::get_drb_dl_mean_throughput(const asn1::e2sm
     } else {
       num_pdu_bytes_with_segmentation = 0;
     }
+
     auto num_pdu_bytes_no_segmentation =
         std::accumulate(ue.second.begin(), ue.second.end(), 0, [](size_t sum, const rlc_metrics& metric) {
           return sum + metric.tx.tx_low.num_pdu_bytes_no_segmentation;
         });
     num_pdu_bytes_no_segmentation /= ue.second.size();
+
     seconds = (float)std::chrono::duration_cast<std::chrono::milliseconds>(ue.second.back().metrics_period).count() /
               (float)1000;
-    ue_throughput[ue.first] = bytes_to_kbits(num_pdu_bytes_no_segmentation + num_pdu_bytes_with_segmentation) / seconds;
+
+    ue_throughput[ue.first] =
+        bytes_to_kbits(num_pdu_bytes_no_segmentation + num_pdu_bytes_with_segmentation) / seconds;
   }
-    // 🔥 FALLBACK: use scheduler if RLC is empty or zero
-    bool need_sched_fallback = ue_throughput.empty();
 
-    if (!need_sched_fallback) {
-  	need_sched_fallback = std::all_of(
-    	 ue_throughput.begin(),
-    	 ue_throughput.end(),
-         [](const auto& kv){ return kv.second == 0; }
-  	);
+  // Fallback for test mode: if RLC metrics are empty or all zero, use scheduler metrics.
+  bool need_sched_fallback = ue_throughput.empty();
+  if (!need_sched_fallback) {
+    need_sched_fallback = std::all_of(ue_throughput.begin(), ue_throughput.end(), [](const auto& kv) {
+      return kv.second == 0;
+    });
+  }
+
+  if (need_sched_fallback && !last_ue_metrics.empty()) {
+    ue_throughput.clear();
+
+    for (const auto& ue_metric : last_ue_metrics) {
+      unsigned dl_kbps = scheduler_dl_kbps_from_metrics(ue_metric);
+      ue_throughput[ue_metric.ue_index] = dl_kbps;
+    }
+  }
+
+  if (ue_throughput.empty()) {
+    return handle_no_meas_data_available(ues, items, asn1::e2sm::meas_record_item_c::types::options::real);
+  }
+
+  fprintf(stderr, "KPM DEBUG DL: ues.size()=%zu ue_throughput.size()=%zu items.size() before fill=%zu\n",
+          ues.size(), ue_throughput.size(), items.size());
+
+  // Dynamic fairness policy state.
+  static std::map<uint16_t, double> ue_peak_baseline_ewma;
+  static double jnorm_mu_ewma  = -1.0;
+  static double jnorm_var_ewma = 0.0;
+
+  // Tuning parameters.
+  const double peak_alpha  = 0.05; // EWMA update for per-UE baseline
+  const double stats_alpha = 0.10; // EWMA update for J_norm baseline
+  const double eps         = 1e-9;
+
+  double sum_raw = 0.0;
+  double sumsq_raw = 0.0;
+  size_t n = 0;
+
+  double sum_norm = 0.0;
+  double sumsq_norm = 0.0;
+
+  unsigned min_raw_ue_idx = 0;
+  unsigned max_raw_ue_idx = 0;
+  double min_raw = -1.0;
+  double max_raw = -1.0;
+
+  unsigned min_norm_ue_idx = 0;
+  unsigned max_norm_ue_idx = 0;
+  double min_norm = -1.0;
+  double max_norm = -1.0;
+
+  for (const auto& kv : ue_throughput) {
+    const uint16_t ue_idx = kv.first;
+    const double x = (double)kv.second;
+
+    fprintf(stderr, "KPM DEBUG DL: ue_idx=%u thp=%u\n",
+            (unsigned)ue_idx, (unsigned)kv.second);
+
+    // Track weakest/strongest raw throughput
+    if (min_raw < 0.0 || x < min_raw) {
+      min_raw = x;
+      min_raw_ue_idx = (unsigned)ue_idx;
+    }
+    if (max_raw < 0.0 || x > max_raw) {
+      max_raw = x;
+      max_raw_ue_idx = (unsigned)ue_idx;
     }
 
-    if (need_sched_fallback && !last_ue_metrics.empty()) {
-       ue_throughput.clear();
-
-      for (const auto& ue_metric : last_ue_metrics) {
-        ue_throughput[ue_metric.ue_index] =
-         scheduler_dl_kbps_from_metrics(ue_metric);
+    // Per-UE recent-peak EWMA baseline:
+    // - if throughput rises above baseline, move upward faster
+    // - if throughput drops, decay baseline more slowly
+    auto it = ue_peak_baseline_ewma.find(ue_idx);
+    if (it == ue_peak_baseline_ewma.end()) {
+      ue_peak_baseline_ewma[ue_idx] = x;
+    } else {
+      double b = it->second;
+      if (x > b) {
+        b = (1.0 - peak_alpha) * b + peak_alpha * x;
+      } else {
+        b = (1.0 - 0.05) * b + 0.05 * x;
       }
+      ue_peak_baseline_ewma[ue_idx] = b;
     }
-    
+
+    const double baseline = ue_peak_baseline_ewma[ue_idx];
+    const double y = x / (baseline + eps);
+
+    fprintf(stderr, "KPM DEBUG DL: ue_idx=%u baseline=%.2f normalized=%.6f\n",
+            (unsigned)ue_idx, baseline, y);
+
+    // Track weakest/strongest normalized share
+    if (min_norm < 0.0 || y < min_norm) {
+      min_norm = y;
+      min_norm_ue_idx = (unsigned)ue_idx;
+    }
+    if (max_norm < 0.0 || y > max_norm) {
+      max_norm = y;
+      max_norm_ue_idx = (unsigned)ue_idx;
+    }
+
+    sum_raw += x;
+    sumsq_raw += x * x;
+
+    sum_norm += y;
+    sumsq_norm += y * y;
+
+    n++;
+  }
+
+  if (n > 0 && sumsq_raw > 0.0 && sumsq_norm > 0.0) {
+    const double jain_raw  = (sum_raw * sum_raw) / ((double)n * sumsq_raw);
+    const double jain_norm = (sum_norm * sum_norm) / ((double)n * sumsq_norm);
+
+    // Rolling baseline for normalized Jain
+    if (jnorm_mu_ewma < 0.0) {
+      jnorm_mu_ewma = jain_norm;
+      jnorm_var_ewma = 0.0;
+    } else {
+      const double prev_mu = jnorm_mu_ewma;
+      jnorm_mu_ewma = (1.0 - stats_alpha) * jnorm_mu_ewma + stats_alpha * jain_norm;
+      const double diff = jain_norm - prev_mu;
+      jnorm_var_ewma = (1.0 - stats_alpha) * jnorm_var_ewma + stats_alpha * diff * diff;
+    }
+
+    const double delta = jnorm_mu_ewma - jain_norm;
+
+    fprintf(stderr,
+            "KPM FAIRNESS DL: n=%zu raw_jain=%.6f norm_jain=%.6f rolling_mu=%.6f rolling_var=%.8f delta=%.6f\n",
+            n, jain_raw, jain_norm, jnorm_mu_ewma, jnorm_var_ewma, delta);
+
+    fprintf(stderr,
+            "KPM POLICY DL: weakest_raw_ue=%u weakest_raw=%.2f strongest_raw_ue=%u strongest_raw=%.2f\n",
+            min_raw_ue_idx, min_raw, max_raw_ue_idx, max_raw);
+
+    fprintf(stderr,
+            "KPM POLICY DL: weakest_norm_ue=%u weakest_norm=%.6f strongest_norm_ue=%u strongest_norm=%.6f\n",
+            min_norm_ue_idx, min_norm, max_norm_ue_idx, max_norm);
+
+    // Dynamic decision bands without fixed absolute Jain thresholds.
+    // Compare current norm_jain to its rolling baseline.
+    if (delta * delta <= jnorm_var_ewma + eps) {
+      fprintf(stderr,
+              "KPM POLICY DL: status=BALANCED action=none target_ue=%u\n",
+              min_norm_ue_idx);
+    } else if (delta * delta <= 4.0 * (jnorm_var_ewma + eps)) {
+      fprintf(stderr,
+              "KPM POLICY DL: status=IMBALANCE action=soft_prioritize target_ue=%u monitor_strongest_ue=%u\n",
+              min_norm_ue_idx, max_norm_ue_idx);
+    } else {
+      fprintf(stderr,
+              "KPM POLICY DL: status=STRONG_IMBALANCE action=strong_prioritize target_ue=%u limit_ue=%u\n",
+              min_norm_ue_idx, max_norm_ue_idx);
+    }
+  } else {
+    fprintf(stderr, "KPM FAIRNESS DL: insufficient data\n");
+  }
+
+  fflush(stderr);
+
   if (ues.empty()) {
-    meas_record_item_c meas_record_item;
-    int                total_throughput = 0;
-    for (auto& ue : ue_throughput) {
-      total_throughput += ue.second;
+    for (const auto& ue : ue_throughput) {
+      meas_record_item_c meas_record_item;
+      meas_record_item.set_real().value = ue.second;
+      items.push_back(meas_record_item);
+      meas_collected = true;
     }
-    meas_record_item.set_real().value = total_throughput;
-    items.push_back(meas_record_item);
-    meas_collected = true;
+    return meas_collected;
   }
 
   for (auto& ue : ues) {
@@ -830,12 +973,6 @@ bool e2sm_kpm_du_meas_provider_impl::get_drb_ul_mean_throughput(const asn1::e2sm
                                                                 std::vector<asn1::e2sm::meas_record_item_c>& items)
 {
   bool meas_collected = false;
-  //**if (ue_aggr_rlc_metrics.empty()) {
-  //  return handle_no_meas_data_available(ues, items, asn1::e2sm::meas_record_item_c::types::options::real);
-  //}**
-  if (ue_aggr_rlc_metrics.empty() && last_ue_metrics.empty()) {
-   return handle_no_meas_data_available(ues, items, asn1::e2sm::meas_record_item_c::types::options::real);
-}
   if ((label_info_list.size() > 1 or
        (label_info_list.size() == 1 and not label_info_list[0].meas_label.no_label_present))) {
     logger.debug("Metric: DRB.UEThpUl supports only NO_LABEL label.");
@@ -844,46 +981,58 @@ bool e2sm_kpm_du_meas_provider_impl::get_drb_ul_mean_throughput(const asn1::e2sm
 
   double                       seconds = 1;
   std::map<uint16_t, unsigned> ue_throughput;
+
+  // First try the original RLC-based throughput path.
   for (auto& ue : ue_aggr_rlc_metrics) {
     auto num_pdu_bytes =
         std::accumulate(ue.second.begin(), ue.second.end(), 0, [](size_t sum, const rlc_metrics& metric) {
           return sum + metric.rx.num_pdu_bytes;
         });
     num_pdu_bytes /= ue.second.size();
+
     seconds = (float)std::chrono::duration_cast<std::chrono::milliseconds>(ue.second.back().metrics_period).count() /
               (float)1000;
-    ue_throughput[ue.first] = bytes_to_kbits(num_pdu_bytes) / seconds; // unit is kbps
+
+    ue_throughput[ue.first] = bytes_to_kbits(num_pdu_bytes) / seconds;
   }
-  // 🔥 FALLBACK: use scheduler if RLC is empty or zero
-    bool need_sched_fallback = ue_throughput.empty();
 
-    if (!need_sched_fallback) {
-  	need_sched_fallback = std::all_of(
-    	 ue_throughput.begin(),
-    	 ue_throughput.end(),
-         [](const auto& kv){ return kv.second == 0; }
-  	);
+  // Fallback for test mode: if RLC metrics are empty or all zero, use scheduler metrics.
+  bool need_sched_fallback = ue_throughput.empty();
+  if (!need_sched_fallback) {
+    need_sched_fallback = std::all_of(ue_throughput.begin(), ue_throughput.end(), [](const auto& kv) {
+      return kv.second == 0;
+    });
+  }
+
+  if (need_sched_fallback && !last_ue_metrics.empty()) {
+    ue_throughput.clear();
+
+    for (const auto& ue_metric : last_ue_metrics) {
+      unsigned ul_kbps = scheduler_ul_kbps_from_metrics(ue_metric);
+      ue_throughput[ue_metric.ue_index] = ul_kbps;
     }
+  }
 
-    if (need_sched_fallback && !last_ue_metrics.empty()) {
-       ue_throughput.clear();
+  if (ue_throughput.empty()) {
+    return handle_no_meas_data_available(ues, items, asn1::e2sm::meas_record_item_c::types::options::real);
+  }
 
-      for (const auto& ue_metric : last_ue_metrics) {
-        ue_throughput[ue_metric.ue_index] =
-         scheduler_ul_kbps_from_metrics(ue_metric);
-      }
-    }
-  
-  
+  fprintf(stderr, "KPM DEBUG UL: ues.size()=%zu ue_throughput.size()=%zu items.size() before fill=%zu\n",
+          ues.size(), ue_throughput.size(), items.size());
+  for (const auto& kv : ue_throughput) {
+    fprintf(stderr, "KPM DEBUG UL: ue_idx=%u thp=%u\n",
+            (unsigned)kv.first, (unsigned)kv.second);
+  }
+  fflush(stderr);
+
   if (ues.empty()) {
-    meas_record_item_c meas_record_item;
-    int                total_throughput = 0;
-    for (auto& ue : ue_throughput) {
-      total_throughput += ue.second;
+    for (const auto& ue : ue_throughput) {
+      meas_record_item_c meas_record_item;
+      meas_record_item.set_real().value = ue.second;
+      items.push_back(meas_record_item);
+      meas_collected = true;
     }
-    meas_record_item.set_real().value = total_throughput;
-    items.push_back(meas_record_item);
-    meas_collected = true;
+    return meas_collected;
   }
 
   for (auto& ue : ues) {
@@ -1263,4 +1412,3 @@ bool e2sm_kpm_du_meas_provider_impl::get_drb_ul_rlc_sdu_latency(const asn1::e2sm
   }
   return meas_collected;
 }
-

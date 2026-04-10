@@ -77,11 +77,9 @@ static unsigned get_dynamic_test_cqi(rnti_t rnti)
 
   static std::unordered_map<unsigned, cqi_state> ue_cqi_state;
   static std::mt19937 rng(std::random_device{}());
-  static std::uniform_int_distribution<int> step_dist(-1, 1);
+  static std::uniform_int_distribution<unsigned> cqi_dist(1, 15);
   static std::mutex mtx;
 
-  constexpr unsigned MIN_CQI = 1;
-  constexpr unsigned MAX_CQI = 15;
   constexpr unsigned HOLD_UPDATES = 20;
 
   const unsigned rnti_val = to_value(rnti);
@@ -90,19 +88,14 @@ static unsigned get_dynamic_test_cqi(rnti_t rnti)
 
   auto& st = ue_cqi_state[rnti_val];
 
-  // Initialize each UE with a different starting CQI
-  if (st.hold_count == 0 && st.cqi == 10) {
-    static const unsigned init_cqi_list[] = {3, 5, 8, 11, 14};
-    st.cqi = init_cqi_list[rnti_val % 5];
+  if (st.hold_count == 0) {
+    st.cqi = cqi_dist(rng);
   }
 
   st.hold_count++;
 
   if (st.hold_count >= HOLD_UPDATES) {
     st.hold_count = 0;
-    int next_cqi = static_cast<int>(st.cqi) + step_dist(rng);
-    next_cqi = std::max<int>(MIN_CQI, std::min<int>(MAX_CQI, next_cqi));
-    st.cqi = static_cast<unsigned>(next_cqi);
   }
 
   return st.cqi;
