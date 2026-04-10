@@ -1,3 +1,8 @@
-
+build/
+*.o
+*.a
+*.so
 logs/
+Simulation/logs/
 ran_dashboard/.venv/
+
