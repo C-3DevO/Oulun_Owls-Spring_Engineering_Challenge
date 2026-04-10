@@ -1,6 +1,0 @@
-[submodule "ran_dashboard"]
-	path = ran_dashboard
-	url = https://github.com/C-3DevO/ran-dashboard.git
-[submodule "srsRAN_Project"]
-	path = srsRAN_Project
-	url = https://github.com/C-3DevO/srsRAN_Project.git

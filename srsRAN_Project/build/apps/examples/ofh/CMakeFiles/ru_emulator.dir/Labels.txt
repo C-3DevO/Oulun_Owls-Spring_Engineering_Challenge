@@ -1,0 +1,8 @@
+# Directory labels
+ ofh
+# Source files and their labels
+/home/cp3-dev0/Simulation/srsRAN_Project/apps/examples/ofh/ru_emulator_cli11_schema.cpp
+/home/cp3-dev0/Simulation/srsRAN_Project/apps/examples/ofh/ru_emulator.cpp
+/home/cp3-dev0/Simulation/srsRAN_Project/apps/examples/ofh/ru_emulator_rx_window_checker.cpp
+/home/cp3-dev0/Simulation/srsRAN_Project/apps/examples/ofh/ru_emulator_socket_transceiver.cpp
+/home/cp3-dev0/Simulation/srsRAN_Project/apps/examples/ofh/ru_emulator_timing_notifier.cpp
