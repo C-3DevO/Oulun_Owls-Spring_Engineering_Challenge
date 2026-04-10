@@ -48,7 +48,7 @@ cell_cfg:
     nof_preselected_newtx_ues: 8
    
     policy: 
-       qos_sched:
+       rr_sched:
            
            
            

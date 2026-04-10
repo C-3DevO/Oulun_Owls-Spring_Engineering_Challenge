@@ -1,4 +1,4 @@
-# Install script for directory: /home/cp3-dev0/Simulation/srsRAN_Project/lib/f1ap/cu_cp
+# Install script for directory: /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/lib/f1ap/cu_cp
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

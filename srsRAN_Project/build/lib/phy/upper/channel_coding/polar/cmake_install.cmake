@@ -1,4 +1,4 @@
-# Install script for directory: /home/cp3-dev0/Simulation/srsRAN_Project/lib/phy/upper/channel_coding/polar
+# Install script for directory: /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/lib/phy/upper/channel_coding/polar
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

@@ -1,4 +1,4 @@
-# Install script for directory: /home/cp3-dev0/Simulation/srsRAN_Project/apps/cu
+# Install script for directory: /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/apps/cu
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -49,7 +49,7 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
          FILE "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/srscu"
          RPATH "")
   endif()
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" TYPE EXECUTABLE FILES "/home/cp3-dev0/Simulation/srsRAN_Project/build/apps/cu/srscu")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" TYPE EXECUTABLE FILES "/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/apps/cu/srscu")
   if(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/srscu" AND
      NOT IS_SYMLINK "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/srscu")
     if(CMAKE_INSTALL_DO_STRIP)
@@ -59,6 +59,6 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  include("/home/cp3-dev0/Simulation/srsRAN_Project/build/apps/cu/SPDXRef-Binary-srscu.cmake")
+  include("/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/apps/cu/SPDXRef-Binary-srscu.cmake")
 endif()
 

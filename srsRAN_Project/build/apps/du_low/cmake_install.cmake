@@ -1,4 +1,4 @@
-# Install script for directory: /home/cp3-dev0/Simulation/srsRAN_Project/apps/du_low
+# Install script for directory: /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/apps/du_low
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -49,7 +49,7 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
          FILE "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/srsdu_low"
          RPATH "")
   endif()
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" TYPE EXECUTABLE FILES "/home/cp3-dev0/Simulation/srsRAN_Project/build/apps/du_low/srsdu_low")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" TYPE EXECUTABLE FILES "/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/apps/du_low/srsdu_low")
   if(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/srsdu_low" AND
      NOT IS_SYMLINK "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/srsdu_low")
     if(CMAKE_INSTALL_DO_STRIP)
@@ -59,6 +59,6 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  include("/home/cp3-dev0/Simulation/srsRAN_Project/build/apps/du_low/SPDXRef-Binary-srsdu-low.cmake")
+  include("/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/apps/du_low/SPDXRef-Binary-srsdu-low.cmake")
 endif()
 

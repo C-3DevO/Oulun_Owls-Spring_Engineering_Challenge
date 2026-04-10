@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/cp3-dev0/Simulation/srsRAN_Project
+CMAKE_SOURCE_DIR = /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/cp3-dev0/Simulation/srsRAN_Project/build
+CMAKE_BINARY_DIR = /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build
 
 # Include any dependencies generated for this target.
 include apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/depend.make
@@ -72,58 +72,58 @@ include apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_gene
 apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/executors.cpp.o: apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/flags.make
 apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/executors.cpp.o: ../apps/helpers/metrics/json_generators/executors.cpp
 apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/executors.cpp.o: apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cp3-dev0/Simulation/srsRAN_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/executors.cpp.o"
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build/apps/helpers/metrics/json_generators && /usr/bin/ccache /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/executors.cpp.o -MF CMakeFiles/srsran_metrics_json_generators.dir/executors.cpp.o.d -o CMakeFiles/srsran_metrics_json_generators.dir/executors.cpp.o -c /home/cp3-dev0/Simulation/srsRAN_Project/apps/helpers/metrics/json_generators/executors.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/executors.cpp.o"
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/apps/helpers/metrics/json_generators && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/executors.cpp.o -MF CMakeFiles/srsran_metrics_json_generators.dir/executors.cpp.o.d -o CMakeFiles/srsran_metrics_json_generators.dir/executors.cpp.o -c /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/apps/helpers/metrics/json_generators/executors.cpp
 
 apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/executors.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/srsran_metrics_json_generators.dir/executors.cpp.i"
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build/apps/helpers/metrics/json_generators && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cp3-dev0/Simulation/srsRAN_Project/apps/helpers/metrics/json_generators/executors.cpp > CMakeFiles/srsran_metrics_json_generators.dir/executors.cpp.i
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/apps/helpers/metrics/json_generators && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/apps/helpers/metrics/json_generators/executors.cpp > CMakeFiles/srsran_metrics_json_generators.dir/executors.cpp.i
 
 apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/executors.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/srsran_metrics_json_generators.dir/executors.cpp.s"
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build/apps/helpers/metrics/json_generators && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cp3-dev0/Simulation/srsRAN_Project/apps/helpers/metrics/json_generators/executors.cpp -o CMakeFiles/srsran_metrics_json_generators.dir/executors.cpp.s
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/apps/helpers/metrics/json_generators && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/apps/helpers/metrics/json_generators/executors.cpp -o CMakeFiles/srsran_metrics_json_generators.dir/executors.cpp.s
 
 apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/o_du_high.cpp.o: apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/flags.make
 apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/o_du_high.cpp.o: ../apps/helpers/metrics/json_generators/o_du_high.cpp
 apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/o_du_high.cpp.o: apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cp3-dev0/Simulation/srsRAN_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/o_du_high.cpp.o"
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build/apps/helpers/metrics/json_generators && /usr/bin/ccache /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/o_du_high.cpp.o -MF CMakeFiles/srsran_metrics_json_generators.dir/o_du_high.cpp.o.d -o CMakeFiles/srsran_metrics_json_generators.dir/o_du_high.cpp.o -c /home/cp3-dev0/Simulation/srsRAN_Project/apps/helpers/metrics/json_generators/o_du_high.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/o_du_high.cpp.o"
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/apps/helpers/metrics/json_generators && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/o_du_high.cpp.o -MF CMakeFiles/srsran_metrics_json_generators.dir/o_du_high.cpp.o.d -o CMakeFiles/srsran_metrics_json_generators.dir/o_du_high.cpp.o -c /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/apps/helpers/metrics/json_generators/o_du_high.cpp
 
 apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/o_du_high.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/srsran_metrics_json_generators.dir/o_du_high.cpp.i"
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build/apps/helpers/metrics/json_generators && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cp3-dev0/Simulation/srsRAN_Project/apps/helpers/metrics/json_generators/o_du_high.cpp > CMakeFiles/srsran_metrics_json_generators.dir/o_du_high.cpp.i
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/apps/helpers/metrics/json_generators && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/apps/helpers/metrics/json_generators/o_du_high.cpp > CMakeFiles/srsran_metrics_json_generators.dir/o_du_high.cpp.i
 
 apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/o_du_high.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/srsran_metrics_json_generators.dir/o_du_high.cpp.s"
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build/apps/helpers/metrics/json_generators && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cp3-dev0/Simulation/srsRAN_Project/apps/helpers/metrics/json_generators/o_du_high.cpp -o CMakeFiles/srsran_metrics_json_generators.dir/o_du_high.cpp.s
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/apps/helpers/metrics/json_generators && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/apps/helpers/metrics/json_generators/o_du_high.cpp -o CMakeFiles/srsran_metrics_json_generators.dir/o_du_high.cpp.s
 
 apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/o_du_low.cpp.o: apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/flags.make
 apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/o_du_low.cpp.o: ../apps/helpers/metrics/json_generators/o_du_low.cpp
 apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/o_du_low.cpp.o: apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cp3-dev0/Simulation/srsRAN_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/o_du_low.cpp.o"
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build/apps/helpers/metrics/json_generators && /usr/bin/ccache /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/o_du_low.cpp.o -MF CMakeFiles/srsran_metrics_json_generators.dir/o_du_low.cpp.o.d -o CMakeFiles/srsran_metrics_json_generators.dir/o_du_low.cpp.o -c /home/cp3-dev0/Simulation/srsRAN_Project/apps/helpers/metrics/json_generators/o_du_low.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/o_du_low.cpp.o"
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/apps/helpers/metrics/json_generators && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/o_du_low.cpp.o -MF CMakeFiles/srsran_metrics_json_generators.dir/o_du_low.cpp.o.d -o CMakeFiles/srsran_metrics_json_generators.dir/o_du_low.cpp.o -c /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/apps/helpers/metrics/json_generators/o_du_low.cpp
 
 apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/o_du_low.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/srsran_metrics_json_generators.dir/o_du_low.cpp.i"
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build/apps/helpers/metrics/json_generators && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cp3-dev0/Simulation/srsRAN_Project/apps/helpers/metrics/json_generators/o_du_low.cpp > CMakeFiles/srsran_metrics_json_generators.dir/o_du_low.cpp.i
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/apps/helpers/metrics/json_generators && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/apps/helpers/metrics/json_generators/o_du_low.cpp > CMakeFiles/srsran_metrics_json_generators.dir/o_du_low.cpp.i
 
 apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/o_du_low.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/srsran_metrics_json_generators.dir/o_du_low.cpp.s"
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build/apps/helpers/metrics/json_generators && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cp3-dev0/Simulation/srsRAN_Project/apps/helpers/metrics/json_generators/o_du_low.cpp -o CMakeFiles/srsran_metrics_json_generators.dir/o_du_low.cpp.s
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/apps/helpers/metrics/json_generators && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/apps/helpers/metrics/json_generators/o_du_low.cpp -o CMakeFiles/srsran_metrics_json_generators.dir/o_du_low.cpp.s
 
 apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/resource_usage.cpp.o: apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/flags.make
 apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/resource_usage.cpp.o: ../apps/helpers/metrics/json_generators/resource_usage.cpp
 apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/resource_usage.cpp.o: apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cp3-dev0/Simulation/srsRAN_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/resource_usage.cpp.o"
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build/apps/helpers/metrics/json_generators && /usr/bin/ccache /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/resource_usage.cpp.o -MF CMakeFiles/srsran_metrics_json_generators.dir/resource_usage.cpp.o.d -o CMakeFiles/srsran_metrics_json_generators.dir/resource_usage.cpp.o -c /home/cp3-dev0/Simulation/srsRAN_Project/apps/helpers/metrics/json_generators/resource_usage.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/resource_usage.cpp.o"
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/apps/helpers/metrics/json_generators && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/resource_usage.cpp.o -MF CMakeFiles/srsran_metrics_json_generators.dir/resource_usage.cpp.o.d -o CMakeFiles/srsran_metrics_json_generators.dir/resource_usage.cpp.o -c /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/apps/helpers/metrics/json_generators/resource_usage.cpp
 
 apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/resource_usage.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/srsran_metrics_json_generators.dir/resource_usage.cpp.i"
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build/apps/helpers/metrics/json_generators && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cp3-dev0/Simulation/srsRAN_Project/apps/helpers/metrics/json_generators/resource_usage.cpp > CMakeFiles/srsran_metrics_json_generators.dir/resource_usage.cpp.i
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/apps/helpers/metrics/json_generators && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/apps/helpers/metrics/json_generators/resource_usage.cpp > CMakeFiles/srsran_metrics_json_generators.dir/resource_usage.cpp.i
 
 apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/resource_usage.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/srsran_metrics_json_generators.dir/resource_usage.cpp.s"
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build/apps/helpers/metrics/json_generators && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cp3-dev0/Simulation/srsRAN_Project/apps/helpers/metrics/json_generators/resource_usage.cpp -o CMakeFiles/srsran_metrics_json_generators.dir/resource_usage.cpp.s
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/apps/helpers/metrics/json_generators && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/apps/helpers/metrics/json_generators/resource_usage.cpp -o CMakeFiles/srsran_metrics_json_generators.dir/resource_usage.cpp.s
 
 # Object files for target srsran_metrics_json_generators
 srsran_metrics_json_generators_OBJECTS = \
@@ -141,19 +141,19 @@ apps/helpers/metrics/json_generators/libsrsran_metrics_json_generators.a: apps/h
 apps/helpers/metrics/json_generators/libsrsran_metrics_json_generators.a: apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/resource_usage.cpp.o
 apps/helpers/metrics/json_generators/libsrsran_metrics_json_generators.a: apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/build.make
 apps/helpers/metrics/json_generators/libsrsran_metrics_json_generators.a: apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/cp3-dev0/Simulation/srsRAN_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX static library libsrsran_metrics_json_generators.a"
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build/apps/helpers/metrics/json_generators && $(CMAKE_COMMAND) -P CMakeFiles/srsran_metrics_json_generators.dir/cmake_clean_target.cmake
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build/apps/helpers/metrics/json_generators && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/srsran_metrics_json_generators.dir/link.txt --verbose=$(VERBOSE)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX static library libsrsran_metrics_json_generators.a"
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/apps/helpers/metrics/json_generators && $(CMAKE_COMMAND) -P CMakeFiles/srsran_metrics_json_generators.dir/cmake_clean_target.cmake
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/apps/helpers/metrics/json_generators && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/srsran_metrics_json_generators.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
 apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/build: apps/helpers/metrics/json_generators/libsrsran_metrics_json_generators.a
 .PHONY : apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/build
 
 apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/clean:
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build/apps/helpers/metrics/json_generators && $(CMAKE_COMMAND) -P CMakeFiles/srsran_metrics_json_generators.dir/cmake_clean.cmake
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/apps/helpers/metrics/json_generators && $(CMAKE_COMMAND) -P CMakeFiles/srsran_metrics_json_generators.dir/cmake_clean.cmake
 .PHONY : apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/clean
 
 apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/depend:
-	cd /home/cp3-dev0/Simulation/srsRAN_Project/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cp3-dev0/Simulation/srsRAN_Project /home/cp3-dev0/Simulation/srsRAN_Project/apps/helpers/metrics/json_generators /home/cp3-dev0/Simulation/srsRAN_Project/build /home/cp3-dev0/Simulation/srsRAN_Project/build/apps/helpers/metrics/json_generators /home/cp3-dev0/Simulation/srsRAN_Project/build/apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/apps/helpers/metrics/json_generators /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/apps/helpers/metrics/json_generators /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : apps/helpers/metrics/json_generators/CMakeFiles/srsran_metrics_json_generators.dir/depend
 

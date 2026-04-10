@@ -1,4 +1,4 @@
-# Install script for directory: /home/cp3-dev0/Simulation/srsRAN_Project/lib/f1ap
+# Install script for directory: /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/lib/f1ap
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -44,16 +44,16 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cp3-dev0/Simulation/srsRAN_Project/build/lib/f1ap/cu_cp/cmake_install.cmake")
+  include("/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/lib/f1ap/cu_cp/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cp3-dev0/Simulation/srsRAN_Project/build/lib/f1ap/du/cmake_install.cmake")
+  include("/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/lib/f1ap/du/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cp3-dev0/Simulation/srsRAN_Project/build/lib/f1ap/gateways/cmake_install.cmake")
+  include("/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/lib/f1ap/gateways/cmake_install.cmake")
 endif()
 

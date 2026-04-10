@@ -1,4 +1,4 @@
-# Install script for directory: /home/cp3-dev0/Simulation/srsRAN_Project/lib/phy
+# Install script for directory: /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/lib/phy
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -44,26 +44,26 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cp3-dev0/Simulation/srsRAN_Project/build/lib/phy/generic_functions/cmake_install.cmake")
+  include("/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/lib/phy/generic_functions/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cp3-dev0/Simulation/srsRAN_Project/build/lib/phy/lower/cmake_install.cmake")
+  include("/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/lib/phy/lower/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cp3-dev0/Simulation/srsRAN_Project/build/lib/phy/metrics/cmake_install.cmake")
+  include("/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/lib/phy/metrics/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cp3-dev0/Simulation/srsRAN_Project/build/lib/phy/support/cmake_install.cmake")
+  include("/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/lib/phy/support/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cp3-dev0/Simulation/srsRAN_Project/build/lib/phy/upper/cmake_install.cmake")
+  include("/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/lib/phy/upper/cmake_install.cmake")
 endif()
 

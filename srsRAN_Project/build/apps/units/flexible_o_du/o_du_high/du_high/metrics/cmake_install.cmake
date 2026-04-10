@@ -1,4 +1,4 @@
-# Install script for directory: /home/cp3-dev0/Simulation/srsRAN_Project/apps/units/flexible_o_du/o_du_high/du_high/metrics
+# Install script for directory: /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/apps/units/flexible_o_du/o_du_high/du_high/metrics
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -44,6 +44,6 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cp3-dev0/Simulation/srsRAN_Project/build/apps/units/flexible_o_du/o_du_high/du_high/metrics/consumers/cmake_install.cmake")
+  include("/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/apps/units/flexible_o_du/o_du_high/du_high/metrics/consumers/cmake_install.cmake")
 endif()
 

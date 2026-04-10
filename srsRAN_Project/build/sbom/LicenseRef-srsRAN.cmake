@@ -1,12 +1,12 @@
 
-			file(APPEND "/home/cp3-dev0/Simulation/srsRAN_Project/build/sbom/sbom.spdx.in"
+			file(APPEND "/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/sbom/sbom.spdx.in"
 "
 LicenseID: LicenseRef-srsRAN
 LicenseName: AGPL-3.0-only
 ExtractedText: <text>"
 			)
 
-			file(APPEND "/home/cp3-dev0/Simulation/srsRAN_Project/build/sbom/sbom.spdx.in"
+			file(APPEND "/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/sbom/sbom.spdx.in"
 				[=[                    GNU AFFERO GENERAL PUBLIC LICENSE
                        Version 3, 19 November 2007
 
@@ -671,7 +671,7 @@ For more information on this, and how to apply and follow the GNU AGPL, see
 ]=]
 			)
 
-			file(APPEND "/home/cp3-dev0/Simulation/srsRAN_Project/build/sbom/sbom.spdx.in"
+			file(APPEND "/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/sbom/sbom.spdx.in"
 "</text>
 ")
 			

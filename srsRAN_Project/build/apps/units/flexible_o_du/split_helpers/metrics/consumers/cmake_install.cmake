@@ -1,4 +1,4 @@
-# Install script for directory: /home/cp3-dev0/Simulation/srsRAN_Project/apps/units/flexible_o_du/split_helpers/metrics/consumers
+# Install script for directory: /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/apps/units/flexible_o_du/split_helpers/metrics/consumers
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

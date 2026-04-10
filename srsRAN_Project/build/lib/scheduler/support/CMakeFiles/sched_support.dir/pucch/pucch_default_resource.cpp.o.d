@@ -1,13 +1,13 @@
 lib/scheduler/support/CMakeFiles/sched_support.dir/pucch/pucch_default_resource.cpp.o: \
- /home/cp3-dev0/Simulation/srsRAN_Project/lib/scheduler/support/pucch/pucch_default_resource.cpp \
+ /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/lib/scheduler/support/pucch/pucch_default_resource.cpp \
  /usr/include/stdc-predef.h \
- /home/cp3-dev0/Simulation/srsRAN_Project/lib/scheduler/support/pucch/pucch_default_resource.h \
- /home/cp3-dev0/Simulation/srsRAN_Project/include/srsran/adt/static_vector.h \
- /home/cp3-dev0/Simulation/srsRAN_Project/include/srsran/support/compiler.h \
- /home/cp3-dev0/Simulation/srsRAN_Project/include/srsran/support/srsran_assert.h \
- /home/cp3-dev0/Simulation/srsRAN_Project/include/srsran/support/error_handling.h \
- /home/cp3-dev0/Simulation/srsRAN_Project/include/srsran/support/rtsan.h \
- /home/cp3-dev0/Simulation/srsRAN_Project/external/fmt/include/fmt/base.h \
+ /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/lib/scheduler/support/pucch/pucch_default_resource.h \
+ /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/include/srsran/adt/static_vector.h \
+ /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/include/srsran/support/compiler.h \
+ /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/include/srsran/support/srsran_assert.h \
+ /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/include/srsran/support/error_handling.h \
+ /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/include/srsran/support/rtsan.h \
+ /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/external/fmt/include/fmt/base.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/limits.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/syslimits.h \
  /usr/include/limits.h \
@@ -181,4 +181,4 @@ lib/scheduler/support/CMakeFiles/sched_support.dir/pucch/pucch_default_resource.
  /usr/include/c++/11/backward/auto_ptr.h \
  /usr/include/c++/11/pstl/glue_memory_defs.h \
  /usr/include/c++/11/pstl/execution_defs.h \
- /home/cp3-dev0/Simulation/srsRAN_Project/include/srsran/ran/pucch/pucch_mapping.h
+ /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/include/srsran/ran/pucch/pucch_mapping.h

@@ -105,10 +105,10 @@ void scheduler_time_ai::compute_ue_dl_priorities(slot_point,
     header_written = true;
   }
 
-  last_pdsch_slot = pdsch_slot;
+  last_pdsch_slot = pdsch_slot;//log
 
   // Clear buffer for new slot
-  slot_log_buffer.clear();
+  slot_log_buffer.clear();//log
 
   for (auto& u : ue_candidates) {
 

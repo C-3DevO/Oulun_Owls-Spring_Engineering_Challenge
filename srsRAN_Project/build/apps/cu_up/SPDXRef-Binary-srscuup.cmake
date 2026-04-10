@@ -9,7 +9,7 @@
 			else()
 				file(SHA1 ${_install_root}/bin/srscuup _sha1)
 				list(APPEND SBOM_VERIFICATION_CODES ${_sha1})
-				file(APPEND "/home/cp3-dev0/Simulation/srsRAN_Project/build/sbom/sbom.spdx.in"
+				file(APPEND "/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/sbom/sbom.spdx.in"
 "
 FileName: ./bin/srscuup
 SPDXID: SPDXRef-Binary-srscuup

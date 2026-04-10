@@ -1,4 +1,4 @@
-# Install script for directory: /home/cp3-dev0/Simulation/srsRAN_Project
+# Install script for directory: /home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -46,14 +46,14 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
   
 		message(STATUS "Installing: /usr/local/share/srsran.spdx")
 		set(SBOM_EXT_DOCS)
-		file(WRITE "/home/cp3-dev0/Simulation/srsRAN_Project/build/sbom/sbom.spdx.in" "")
+		file(WRITE "/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/sbom/sbom.spdx.in" "")
 		
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   
-				file(READ "/home/cp3-dev0/Simulation/srsRAN_Project/build/SPDXRef-DOCUMENT.spdx.in" _f_contents)
-				file(APPEND "/home/cp3-dev0/Simulation/srsRAN_Project/build/sbom/sbom.spdx.in" "${_f_contents}")
+				file(READ "/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/SPDXRef-DOCUMENT.spdx.in" _f_contents)
+				file(APPEND "/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/sbom/sbom.spdx.in" "${_f_contents}")
 			
 endif()
 
@@ -63,32 +63,32 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cp3-dev0/Simulation/srsRAN_Project/build/apps/cmake_install.cmake")
+  include("/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/apps/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cp3-dev0/Simulation/srsRAN_Project/build/configs/cmake_install.cmake")
+  include("/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/configs/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cp3-dev0/Simulation/srsRAN_Project/build/docs/cmake_install.cmake")
+  include("/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/docs/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cp3-dev0/Simulation/srsRAN_Project/build/external/cmake_install.cmake")
+  include("/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/external/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cp3-dev0/Simulation/srsRAN_Project/build/utils/cmake_install.cmake")
+  include("/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/utils/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/cp3-dev0/Simulation/srsRAN_Project/build/sbom/cmake_install.cmake")
+  include("/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/sbom/cmake_install.cmake")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT)
@@ -99,5 +99,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/cp3-dev0/Simulation/srsRAN_Project/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

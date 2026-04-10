@@ -4,7 +4,7 @@
 # compile C with /usr/bin/cc
 C_DEFINES = -DASSERTS_ENABLED -DLIBUS_NO_SSL
 
-C_INCLUDES = -I/home/cp3-dev0/Simulation/srsRAN_Project/include -I/home/cp3-dev0/Simulation/srsRAN_Project/external/fmt/include -I/home/cp3-dev0/Simulation/srsRAN_Project/external -I/home/cp3-dev0/Simulation/srsRAN_Project/external/uWebSockets/uSockets
+C_INCLUDES = -I/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/include -I/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/external/fmt/include -I/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/external -I/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/external/uWebSockets/uSockets
 
 C_FLAGS = -O3 -DNDEBUG
 
