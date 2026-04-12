@@ -71,6 +71,42 @@ have limitations in dynamic environments.
     
 ---
 
+## 🧩 xApp (Near-RT RIC Monitoring & Control)
+
+This project integrates a **Near-Real-Time RAN Intelligent Controller (RIC)** using the **FlexRIC framework**, enabling external monitoring and control of the RAN.
+
+### 📡 What is an xApp?
+
+An **xApp** is a microservice running on the Near-RT RIC that:
+- Subscribes to RAN metrics via the **E2 interface**
+- Processes real-time data (e.g., CQI, throughput)
+- Makes intelligent decisions or recommendations
+
+👉 In this project, the xApp is used for:
+- **Fairness monitoring**
+- **Policy decision logging**
+- **AI-RAN experimentation**
+
+---
+
+### 🧠 Implemented xApp: Fairness Monitor
+
+- 📁 Location: flexric/examples/xApp/c/monitor/xapp_fairness_moni.c
+
+- ⚙️ Functionality:
+- Subscribes to **E2SM-KPM metrics** from the gNB
+- Computes:
+  - Raw Jain’s Fairness Index
+  - Normalized Jain’s Index
+  - Rolling mean and variance
+  - Fairness delta (instability indicator)
+- Detects:
+  - Balanced state
+  - Imbalance
+  - Strong imbalance
+
+---
+
 ## 🤖 AI Scheduler
 
 The AI scheduler uses:
