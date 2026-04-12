@@ -41,18 +41,35 @@ Oulun_Owls-Spring_Engineering_Challenge/
 ---
 
 ## ⚙️ System Architecture
-YAML Config (testmode.yml)
-↓
-Config Translator (DU Layer)
-↓
-Scheduler Factory
-↓
-AI Scheduler (DQN / ML Model)
-↓
-PRB Allocation (srsRAN)
-↓
-Metrics → Dashboard (Flask)
 
+- **YAML Config (`testmode.yml`)**
+  - Defines scheduler type and parameters  
+
+⬇️  
+
+- **Config Translator (DU Layer)**
+  - Converts YAML → internal scheduler config  
+
+⬇️  
+
+- **Scheduler Factory**
+  - Selects AI scheduler  
+
+⬇️  
+
+- **AI Scheduler (DQN / ML)**
+  - Computes UE priorities  
+
+⬇️  
+
+- **PRB Allocation (srsRAN)**
+  - Assigns radio resources  
+
+⬇️  
+
+- **Metrics → Dashboard**
+  - Visualized via Flask app
+    
 ---
 
 ## 🤖 AI Scheduler
