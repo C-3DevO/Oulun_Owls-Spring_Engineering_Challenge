@@ -1,5 +1,5 @@
 
-			file(APPEND "/home/binte/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/sbom/sbom.spdx.in"
+			file(APPEND "/home/cp3-dev0/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/build/sbom/sbom.spdx.in"
 "
 PackageName: backward
 SPDXID: SPDXRef-backward

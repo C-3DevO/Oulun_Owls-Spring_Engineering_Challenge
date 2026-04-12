@@ -4,5 +4,5 @@ test_mode:
     nof_ues: 5
     pdsch_active: true
     pusch_active: true
-    ri: 1
+    ri: 2
     rnti: 68

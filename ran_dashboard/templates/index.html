@@ -66,10 +66,25 @@
         padding: 8px 16px;
         border-radius: 6px;
     }
+
+    .top-container {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    flex-wrap: wrap; /* allows responsive wrapping */
+    }
+
+    /* Mode control slightly wider */
+    .mode-box {
+        min-width: 320px;
+        max-width: 350px;
+    }
+
+    /* Services aligned horizontally */
     .services-container {
         display: flex;
-        flex-wrap: wrap;
         gap: 20px;
+        flex-wrap: wrap;
     }
 
     #metrics {
@@ -82,75 +97,143 @@
         flex-wrap: wrap;
         gap: 15px;
     }
-
-    #fairness_alerts {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: 10px;
-    }
-
-    .fairness-alert-card {
+    #status_msg {
+        position: fixed;
+        top: 20px;
+        left: 20px;
         background: #2c2c3e;
-        border-radius: 10px;
-        padding: 15px;
+        color: white;
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-weight: bold;
+        z-index: 1000;
+        max-width: 350px;
         box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-    }
 
-    .fairness-balanced {
-        border-left: 6px solid #00ff9c;
+        opacity: 0;
+        display: none;
+        transition: opacity 0.5s ease;
     }
+    .header {
+    height: 220px;  /* controls how big the banner is */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    .fairness-imbalance {
-        border-left: 6px solid #ffb347;
-    }
+    background: linear-gradient(
+        rgba(30,30,47,0.85),
+        rgba(30,30,47,0.95)
+    ),
+    url('/static/Image001.jpeg');
 
-    .fairness-strong {
-        border-left: 6px solid #ff4d4d;
-    }
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 
-    .alert-time {
-        font-size: 0.9em;
-        color: #cfcfcf;
-        margin-bottom: 6px;
-    }
+    border-radius: 12px;
+    margin-bottom: 30px;
+}
+
+.header h1 {
+    color: white;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+
+
+
 
     </style>
 
 </head>
 <body>
 
-<h1>🚀 sRAN Dashboard</h1>
-
-<button class="stop-all" onclick="stopAll()">🛑 STOP ALL</button>
-<h2>⚙️ Test Mode Control</h2>
-
-<div class="service">
-    <label>Number of UEs:</label>
-    <input type="number" id="ue_count" value="5"><br><br>
-
-    <label>Rank (RI):</label>
-    <input type="number" id="ri_value" value="1"><br><br>
-
-    <button class="start-btn" onclick="applyConfig()">Apply & Restart gNB</button>
+<div class="header">
+    <h1>🚀 sRAN Dashboard</h1>
 </div>
 
-<div id="services" class="services-container"></div>
-<h2>📊 UE Throughput (Live)</h2>
+
+<h3 id="status_msg"></h3>
+<button class="stop-all" onclick="stopAll()">🛑 STOP ALL</button>
+
+
+<h2>⚙️ Control Panel</h2>
+
+<div class="top-container">
+
+    <!-- Mode Control -->
+    <div class="service mode-box">
+        <h3>Mode Control</h3>
+
+        <label>Number of UEs:</label>
+        <input type="number" id="ue_count" value="5"><br><br>
+
+        <label>Rank (RI):</label>
+        <input type="number" id="ri_value" value="1"><br><br>
+
+        <label>Scheduler:</label>
+        <select id="scheduler">
+            <option value="rr_sched">Round Robin</option>
+            <option value="qos_sched">QoS Scheduler</option>
+            <option value="ai_sched">AI Scheduler</option>
+        </select><br><br>
+
+        <button class="start-btn" onclick="applyConfig()">Apply & Restart gNB</button>
+    </div>
+
+    <!-- Services -->
+    <div id="services" class="services-container"></div>
+
+</div>
+
+<h2>📊 UE Throughput </h2>
 <canvas id="chart" height="100"></canvas>
 <h2>📡 UE Radio Metrics</h2>
 <div id="radio_metrics"></div>
+<h2>📊 Cell Throughput</h2>
+<canvas id="cellChart" height="100"></canvas>
+<h2>⚖️ Fairness Index</h2>
+<canvas id="fairnessChart" height="100"></canvas>
+<h2>📦 UE DL Buffer Size</h2>
+<canvas id="dlChart" height="60"></canvas>
 
-<h2>⚠️ Fairness Alerts</h2>
-<div id="fairness_alerts"></div>
-
-<h3 id="status_msg"></h3>
 <script>
-let chart;
+
+// ✅ GLOBAL STYLE (SAFE)
+Chart.defaults.color = "#ffffff";
+Chart.defaults.font.weight = "bold";
+
+Chart.defaults.scales = {
+    x: {
+        ticks: {
+            color: "#ffffff",
+            font: { weight: "bold" }
+        },
+        grid: {
+            color: "#444"
+        }
+    },
+    y: {
+        ticks: {
+            color: "#ffffff",
+            font: { weight: "bold" }
+        },
+        grid: {
+            color: "#444"
+        }
+    }
+};
+let chart, cellChart, fairnessChart, dlChart;
 let chartData = {
     labels: [],
     datasets: []
 };
+let dlData = { labels: [], datasets: [] };
+let cellData = { labels: [], datasets: [{ label: "Cell Throughput", data: [],
+        borderColor: "red", backgroundColor: "red", borderWidth: 2, fill: false }] };
+let fairnessData = { labels: [], datasets: [{ label: "Fairness", data: [],
+        borderColor: "yellow", backgroundColor: "yellow", borderWidth: 2, fill: false }] };
 
 const services = ["open5gs", "ric", "gnb", "xapp"];
 
@@ -186,7 +269,8 @@ function start(name) {
     fetch(`/start/${name}`)
     .then(res => res.json())
     .then(data => {
-        document.getElementById("status_msg").innerText = data.msg;
+       // document.getElementById("status_msg").innerText = data.msg;
+        showMessage(data.msg);
         render(data.status);
     });
 }
@@ -195,7 +279,8 @@ function stop(name) {
     fetch(`/stop/${name}`)
     .then(res => res.json())
     .then(data => {
-        document.getElementById("status_msg").innerText = Array.isArray(data.msg) ? data.msg.join("\n") : data.msg;
+        //document.getElementById("status_msg").innerText = Array.isArray(data.msg) ? data.msg.join("\n") : data.msg;
+        showMessage(data.msg);
         render(data.status);
     });
 }
@@ -204,119 +289,27 @@ function stopAll() {
     fetch('/stop_all')
     .then(res => res.json())
     .then(data => {
-        document.getElementById("status_msg").innerText = data.msg.join("\n");
+        //document.getElementById("status_msg").innerText = data.msg.join("\n");
+        showMessage(data.msg);
         render(data.status);
     });
 }
 //Mofidying configs from interface
 function applyConfig() {
+
     const ue = document.getElementById("ue_count").value;
     const ri = document.getElementById("ri_value").value;
+    const scheduler = document.getElementById("scheduler").value;
 
     fetch('/update_config', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nof_ues: ue, ri: ri })
+        body: JSON.stringify({ nof_ues: ue, ri: ri, scheduler: scheduler })
     })
     .then(res => res.json())
     .then(data => {
-        document.getElementById("status_msg").innerText = data.msg;
-    });
-}
-
-let fairnessAlertHistory = [];
-let lastFairnessSignature = null;
-const MAX_FAIRNESS_ALERTS = 6;
-
-function fetchFairnessAlert() {
-    fetch('/fairness_alert')
-    .then(res => res.json())
-    .then(data => {
-        const container = document.getElementById("fairness_alerts");
-        const status = data.status || "UNKNOWN";
-
-        // Only store alerts when there is IMBALANCE or STRONG_IMBALANCE
-        if (status !== "IMBALANCE" && status !== "STRONG_IMBALANCE") {
-            return;
-        }
-
-        // Create a signature so identical repeated alerts are not re-added every poll
-        const signature = JSON.stringify({
-            status: data.status,
-            action: data.action,
-            target_ue: data.target_ue,
-            weakest_norm_ue: data.weakest_norm_ue,
-            strongest_norm_ue: data.strongest_norm_ue,
-            norm_jain: data.norm_jain,
-            delta: data.delta
-        });
-
-        if (signature === lastFairnessSignature) {
-            return;
-        }
-
-        lastFairnessSignature = signature;
-
-        const now = new Date().toLocaleTimeString();
-
-        fairnessAlertHistory.unshift({
-            time: now,
-            status: data.status,
-            action: data.action,
-            target_ue: data.target_ue,
-            raw_jain: data.raw_jain,
-            norm_jain: data.norm_jain,
-            rolling_mu: data.rolling_mu,
-            delta: data.delta,
-            weakest_raw_ue: data.weakest_raw_ue,
-            strongest_raw_ue: data.strongest_raw_ue,
-            weakest_norm_ue: data.weakest_norm_ue,
-            strongest_norm_ue: data.strongest_norm_ue
-        });
-
-        if (fairnessAlertHistory.length > MAX_FAIRNESS_ALERTS) {
-            fairnessAlertHistory = fairnessAlertHistory.slice(0, MAX_FAIRNESS_ALERTS);
-        }
-
-        renderFairnessAlerts();
-    })
-    .catch(err => {
-        console.error("Fairness fetch error:", err);
-    });
-}
-
-function renderFairnessAlerts() {
-    const container = document.getElementById("fairness_alerts");
-
-    if (fairnessAlertHistory.length === 0) {
-        container.innerHTML = "<div class='service'>No imbalance alerts yet.</div>";
-        return;
-    }
-
-    container.innerHTML = "";
-
-    fairnessAlertHistory.forEach(alert => {
-        let alertClass = "fairness-imbalance";
-        if (alert.status === "STRONG_IMBALANCE") {
-            alertClass = "fairness-strong";
-        }
-
-        container.innerHTML += `
-            <div class="fairness-alert-card ${alertClass}">
-                <div class="alert-time">Detected at: ${alert.time}</div>
-                <h3>${alert.status}</h3>
-                <p><b>Action:</b> ${alert.action || "N/A"}</p>
-                <p><b>Target UE:</b> ${alert.target_ue !== null ? alert.target_ue : "N/A"}</p>
-                <p><b>Raw Jain:</b> ${alert.raw_jain !== null ? alert.raw_jain.toFixed(6) : "N/A"}</p>
-                <p><b>Normalized Jain:</b> ${alert.norm_jain !== null ? alert.norm_jain.toFixed(6) : "N/A"}</p>
-                <p><b>Rolling Mean:</b> ${alert.rolling_mu !== null ? alert.rolling_mu.toFixed(6) : "N/A"}</p>
-                <p><b>Delta:</b> ${alert.delta !== null ? alert.delta.toFixed(6) : "N/A"}</p>
-                <p><b>Weakest Raw UE:</b> ${alert.weakest_raw_ue !== null ? alert.weakest_raw_ue : "N/A"}</p>
-                <p><b>Strongest Raw UE:</b> ${alert.strongest_raw_ue !== null ? alert.strongest_raw_ue : "N/A"}</p>
-                <p><b>Weakest Norm UE:</b> ${alert.weakest_norm_ue !== null ? alert.weakest_norm_ue : "N/A"}</p>
-                <p><b>Strongest Norm UE:</b> ${alert.strongest_norm_ue !== null ? alert.strongest_norm_ue : "N/A"}</p>
-            </div>
-        `;
+       //document.getElementById("status_msg").innerText = data.msg;
+        showMessage(data.msg);
     });
 }
 
@@ -335,13 +328,20 @@ function fetchMetrics() {
             clearRadioMetrics();
             return;
         }
-
-        // otherwise fetch metrics
         fetch('/metrics')
         .then(res => res.json())
         .then(data => {
-            updateChart(data);
-            updateRadioMetrics(data);
+            // ues
+            if (data.ues.length === 0) {
+                resetChart();
+                clearRadioMetrics();
+                return;
+            }
+
+            updateChart(data.ues);
+            updateRadioMetrics(data.ues);
+            updateCellMetrics(data);
+            updateDlMetrics(data.ues);
         });
     });
 }
@@ -369,6 +369,12 @@ function initChart() {
 }
 
 function updateChart(data) {
+     // remove "stopped" message when data comes back
+    chart.options.plugins = {
+        title: {
+            display: false
+       }
+    };
     const now = new Date().toLocaleTimeString();
 
     chartData.labels.push(now);
@@ -402,8 +408,8 @@ function updateChart(data) {
         const min = Math.min(...allValues);
         const max = Math.max(...allValues);
 
-        chart.options.scales.y.min = min * 0.3;
-        chart.options.scales.y.max = max * 1.1;
+        chart.options.scales.y.min = 0.0;
+        chart.options.scales.y.max = max * 1.95;
     }
 
     chart.update();
@@ -414,8 +420,15 @@ function resetChart() {
     chartData.labels = [];
     chartData.datasets = [];
 
+    cellData.labels = [];
+    cellData.datasets[0].data = [];
+
+    fairnessData.labels = [];
+    fairnessData.datasets[0].data = [];
+
     chart.options.scales.y.min = undefined;
     chart.options.scales.y.max = undefined;
+
     chart.options.plugins = {
         title: {
             display: true,
@@ -424,6 +437,11 @@ function resetChart() {
     };
 
     chart.update();
+    cellChart.update();
+    fairnessChart.update();
+    dlData.labels = [];
+    dlData.datasets = [];
+    dlChart.update();
 }
 
 
@@ -454,18 +472,176 @@ function clearRadioMetrics() {
     document.getElementById("radio_metrics").innerHTML = "<p>gNB stopped</p>";
 }
 
-
 initChart();
+initExtraCharts();
 fetchStatus();
 fetchMetrics();
-fetchFairnessAlert();
 
 setInterval(() => {
     fetchStatus();
     fetchMetrics();
-    fetchFairnessAlert();
 }, 3000);
 
+function initExtraCharts() {
+    const ctx1 = document.getElementById('cellChart').getContext('2d');
+    const ctx2 = document.getElementById('fairnessChart').getContext('2d');
+    const ctx3 = document.getElementById('dlChart').getContext('2d');
+
+    cellChart = new Chart(ctx1, {
+    type: 'line',
+    data: cellData,
+    options: {
+        animation: false,
+        scales: {
+            y: {
+                min: 10,
+                max: 100,
+                ticks: {
+                    color: "#aaa"
+                },
+                grid: {
+                    color: "#444"
+                }
+            },
+            x: {
+                ticks: {
+                    color: "#aaa"
+                },
+                grid: {
+                    color: "#444"
+                }
+            }
+        }
+    }
+    });
+
+    fairnessChart = new Chart(ctx2, {
+    type: 'line',
+    data: fairnessData,
+    options: {
+        animation: false,
+        scales: {
+            y: {
+                min: 0,
+                max: 1,
+                ticks: {
+                    color: "#aaa"
+                },
+                grid: {
+                    color: "#444"
+                }
+            },
+            x: {
+                ticks: {
+                    color: "#aaa"
+                },
+                grid: {
+                    color: "#444"
+                }
+            }
+        }
+    }
+    });
+
+
+
+    dlChart = new Chart(ctx3, {
+        type: 'line',
+        data: dlData,
+        options: {
+            animation: false,
+            scales: {
+                y: {
+                    ticks: { color: "#aaa" },
+                    grid: { color: "#444" }
+                },
+                x: {
+                    ticks: { color: "#aaa" },
+                    grid: { color: "#444" }
+                }
+            }
+        }
+    });
+}
+function updateCellMetrics(data) {
+    const now = new Date().toLocaleTimeString();
+
+    // limit history
+    if (cellData.labels.length > 20) {
+        cellData.labels.shift();
+        cellData.datasets[0].data.shift();
+        fairnessData.labels.shift();
+        fairnessData.datasets[0].data.shift();
+    }
+
+    cellData.labels.push(now);
+    fairnessData.labels.push(now);
+
+    cellData.datasets[0].data.push(data.cell_throughput);
+    fairnessData.datasets[0].data.push(data.fairness);
+
+    cellChart.update();
+    fairnessChart.update();
+}
+
+function showMessage(msg) {
+    const box = document.getElementById("status_msg");
+
+    box.innerText = msg;
+    box.style.display = "block";
+    box.style.opacity = "1";
+
+    // Fade out after 3 seconds
+    setTimeout(() => {
+        box.style.opacity = "0";
+    }, 3000);
+
+    // Fully hide after fade
+    setTimeout(() => {
+        box.style.display = "none";
+    }, 3500);
+}
+
+function updateDlMetrics(ues) {
+    const now = new Date().toLocaleTimeString();
+
+    if (dlData.labels.length > 20) {
+        dlData.labels.shift();
+        dlData.datasets.forEach(ds => ds.data.shift());
+    }
+
+    dlData.labels.push(now);
+
+    let allValues = [];
+
+    ues.forEach(ue => {
+        let dataset = dlData.datasets.find(d => d.label === "UE " + ue.rnti);
+
+        if (!dataset) {
+            dataset = {
+                label: "UE " + ue.rnti,
+                data: [],
+                borderWidth: 2,
+                fill: false
+            };
+            dlData.datasets.push(dataset);
+        }
+
+        const val = ue.dl_bs ?? 0;
+        dataset.data.push(val);
+        allValues.push(val);
+    });
+
+    if (allValues.length > 0) {
+        const min = Math.min(...allValues);
+        const max = Math.max(...allValues);
+
+        dlChart.options.scales.y.min = 0;
+        dlChart.options.scales.y.max = max * 1.2;
+    }
+
+    dlChart.update();
+}
 </script>
 
 </body>

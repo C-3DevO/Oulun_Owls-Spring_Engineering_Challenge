@@ -30,6 +30,11 @@
 #include "srsran/scheduler/result/sched_result.h"
 #include <functional>
 #include <utility>
+#include <cstdlib>
+#include <ctime>
+
+
+
 
 using namespace srsran;
 using namespace srs_du;
@@ -61,8 +66,22 @@ public:
   rlc_buffer_state on_buffer_state_update() override
   {
     rlc_buffer_state bs = {};
-    bs.pending_bytes    = TEST_UE_DL_BUFFER_STATE_UPDATE_SIZE;
-    // TODO: set bs.hol_toa
+    //bs.pending_bytes    = TEST_UE_DL_BUFFER_STATE_UPDATE_SIZE;
+    static bool init = false;    
+    if (!init) {
+     srand(time(NULL));
+     init = true;
+    }
+    // **
+    //Random buffer: 0 → 10MB
+    bs.pending_bytes = rand() % TEST_UE_DL_BUFFER_STATE_UPDATE_SIZE;
+   	
+	    // TODO: set bs.hol_toa
+	    
+    //static int cnt = 0; // **
+    //if (++cnt % 1000 == 0){	    
+      //printf("RLC BS = %u\n", bs.pending_bytes);	   // ** DEBUG print  
+    //}  
     return bs;
   }
 
@@ -98,6 +117,10 @@ mac_test_mode_cell_adapter::mac_test_mode_cell_adapter(
 
 void mac_test_mode_cell_adapter::handle_slot_indication(const mac_cell_timing_context& context)
 {
+//**
+
+//**  
+  
   if (test_ue_cfg.auto_ack_indication_delay.has_value()) {
     // auto-generation of CRC/UCI indication is enabled.
     slot_point sl_rx = context.sl_tx - test_ue_cfg.auto_ack_indication_delay.value();
@@ -245,14 +268,15 @@ void mac_test_mode_cell_adapter::forward_crc_ind_to_mac(const mac_crc_indication
     if (not ue_info_mgr.is_cell_test_ue(cell_index, pdu.rnti)) {
       continue;
     }
-
+//**
     auto rx_pdu = create_test_pdu_with_bsr(cell_index, crc_msg.sl_rx, pdu.rnti, to_harq_id(pdu.harq_id));
     if (not rx_pdu.has_value()) {
       logger.warning("TEST_MODE c-rnti={}: Unable to create test PDU with BSR", pdu.rnti);
       continue;
     }
-    // In case of test mode UE, auto-forward a positive BSR.
+   // In case of test mode UE, auto-forward a positive BSR.
     pdu_handler.handle_rx_data_indication(std::move(rx_pdu.value()));
+// **
   }
 }
 
@@ -339,19 +363,21 @@ void mac_test_mode_cell_adapter::on_new_downlink_scheduler_results(const mac_dl_
     auto& lchs = grant.tb_list[0].lc_chs_to_sched;
     if (std::any_of(
             lchs.begin(), lchs.end(), [](const auto& lc) { return lc.lcid.is_sdu() and is_srb(lc.lcid.to_lcid()); })) {
-      if (test_ue_cfg.pdsch_active) {
+      //if (test_ue_cfg.pdsch_active) {
         // Update DL buffer state automatically.
-        dl_bs_notifier(crnti);
-      }
+        //dl_bs_notifier(crnti);  // **
+      //}
 
       if (test_ue_cfg.pusch_active) {
+// **      
         auto rx_pdu = create_test_pdu_with_bsr(cell_index, dl_res.slot, crnti, to_harq_id(0));
         if (not rx_pdu.has_value()) {
           logger.warning("TEST_MODE c-rnti={}: Unable to create test PDU with BSR", crnti);
-          continue;
+         continue;
         }
-        // In case of PUSCH test mode is enabled, push a BSR to trigger the first PUSCH.
+       // In case of PUSCH test mode is enabled, push a BSR to trigger the first PUSCH.
         pdu_handler.handle_rx_data_indication(std::move(rx_pdu.value()));
+// **
       }
 
       // Mark Msg4 received for the UE.
@@ -495,7 +521,7 @@ mac_cell_controller& mac_test_mode_adapter::add_cell(const mac_cell_creation_req
   // Create the cell in the MAC test mode.
   auto func_dl_bs_push = [this](rnti_t rnti) {
     get_ue_control_info_handler().handle_dl_buffer_state_update(
-        {ue_info_mgr.rnti_to_du_ue_idx(rnti), lcid_t::LCID_SRB1, TEST_UE_DL_BUFFER_STATE_UPDATE_SIZE});
+        {ue_info_mgr.rnti_to_du_ue_idx(rnti), lcid_t::LCID_MIN_DRB, TEST_UE_DL_BUFFER_STATE_UPDATE_SIZE});
   };
   auto new_cell =
       std::make_unique<mac_test_mode_cell_adapter>(test_ue,
@@ -546,12 +572,46 @@ mac_cell_control_information_handler& mac_test_mode_adapter::get_control_info_ha
 
 void mac_test_mode_adapter::handle_dl_buffer_state_update(const mac_dl_buffer_state_indication_message& dl_bs)
 {
-  mac_dl_buffer_state_indication_message dl_bs_copy = dl_bs;
-  if (ue_info_mgr.is_test_ue(dl_bs.ue_index) and test_ue.pdsch_active and dl_bs.lcid != LCID_SRB0) {
-    // It is the test UE. Set a positive DL buffer state if PDSCH is set to "activated".
-    dl_bs_copy.bs = TEST_UE_DL_BUFFER_STATE_UPDATE_SIZE;
+// **
+  // Don't need to modify DL buffer here, just forward it
+  //printf("MAC RX dl_bs = %u\n", dl_bs.bs);// ** debug
+  //mac_adapted->get_ue_control_info_handler().handle_dl_buffer_state_update(dl_bs);
+  //**
+  static bool init = false;
+  if (!init) {
+    srand(time(NULL));
+    init = true;
   }
-  mac_adapted->get_ue_control_info_handler().handle_dl_buffer_state_update(dl_bs_copy);
+// **
+  mac_dl_buffer_state_indication_message dl_bs_copy = dl_bs;
+
+  if (ue_info_mgr.is_test_ue(dl_bs.ue_index) &&
+      test_ue.pdsch_active &&
+      dl_bs.lcid == lcid_t::LCID_MIN_DRB)   // * ONLY DATA CHANNEL
+  {
+    // * Random buffer between 0 and 10MB
+    dl_bs_copy.bs = rand() % TEST_UE_DL_BUFFER_STATE_UPDATE_SIZE;
+// **
+    //if (dl_bs.ue_index == 0) {
+      //dl_bs_copy.bs = 0;
+    //} else {
+      //dl_bs_copy.bs = rand() % TEST_UE_DL_BUFFER_STATE_UPDATE_SIZE;
+    //}
+// **
+    printf("FINAL DL_BS (UE %d) = %u\n",
+           dl_bs.ue_index,
+           dl_bs_copy.bs);
+  }
+  else {
+    //* kill all other LCIDs
+    dl_bs_copy.bs = 0; // **
+    // Keep original for non-data LCIDs
+    dl_bs_copy.bs = dl_bs.bs;
+  }
+
+  mac_adapted->get_ue_control_info_handler()
+      .handle_dl_buffer_state_update(dl_bs_copy);
+// **
 }
 
 std::vector<mac_logical_channel_config>
@@ -631,8 +691,6 @@ std::unique_ptr<mac_interface> srsran::srs_du::create_du_high_mac(const mac_conf
   if (not test_cfg.test_ue.has_value()) {
     return create_mac(mac_cfg);
   }
-
-
 
   // Create a MAC test mode adapter that wraps the real MAC.
   auto mac_testmode = std::make_unique<mac_test_mode_adapter>(*test_cfg.test_ue, mac_cfg.phy_notifier, nof_cells);

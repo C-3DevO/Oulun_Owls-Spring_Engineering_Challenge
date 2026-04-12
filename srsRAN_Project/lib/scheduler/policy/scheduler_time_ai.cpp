@@ -7,63 +7,64 @@
 #include <cstdlib>
 #include <iostream>
 #include <stdexcept>
+#include <random>
+#include <array>
+#include "dqn_weights.h"
 
 using namespace srsran;
+static constexpr double action_scale[5] = {0.8, 0.9, 1.0, 1.1, 1.2};
 
-// ===== NN WEIGHTS =====
-static double W1[32][4];
-static double W2[32][32];
-static double W3[32];
-
-static double B1_nn[32];
-static double B2_nn[32];
-static double B3_nn[1];
-
-
+// ================= ACTIVATION =================
 inline double relu(double x) {
   return x > 0.0 ? x : 0.0;
 }
-
-void load_weights(const std::string& path)
+// ================= DQN INFERENCE =================
+int dqn_inference(const std::array<float, 4>& x)
 {
-  std::ifstream file(path);
+  double h1[64];
 
-  if (!file.is_open()) {
-    throw std::runtime_error("Failed to open weights file");
+  for (int i = 0; i < 64; i++) {
+    h1[i] = B1[i];
+    for (int j = 0; j < 4; j++)
+      h1[i] += W1[i][j] * x[j];
+    h1[i] = relu(h1[i]);
   }
 
-  // W1 (32x4)
-  for (int i = 0; i < 32; i++)
-    for (int j = 0; j < 4; j++)
-      file >> W1[i][j];
+  double h2[64];
 
-  // B1 (32)
-  for (int i = 0; i < 32; i++)
-    file >> B1_nn[i];
+  for (int i = 0; i < 64; i++) {
+    h2[i] = B2[i];
+    for (int j = 0; j < 64; j++)
+      h2[i] += W2[i][j] * h1[j];
+    h2[i] = relu(h2[i]);
+  }
 
-  // W2 (32x32)
-  for (int i = 0; i < 32; i++)
-    for (int j = 0; j < 32; j++)
-      file >> W2[i][j];
+  double q[5];
 
-  // B2 (32)
-  for (int i = 0; i < 32; i++)
-    file >> B2_nn[i];
+  for (int i = 0; i < 5; i++) {
+    q[i] = B3[i];
+    for (int j = 0; j < 64; j++)
+      q[i] += W3[i][j] * h2[j];
+  }
 
-  // W3 (32)
-  for (int i = 0; i < 32; i++)
-    file >> W3[i];
+  int best = 0;
+  for (int i = 1; i < 5; i++) {
+    if (q[i] > q[best])
+      best = i;
+  }
 
-  // B3 (1)
-  file >> B3_nn[0];
+  return best;
 }
 
 
-// ===== RL LOGGING =====
-static std::string log_path = std::string(getenv("HOME")) + "/Simulation/logs/nn_scheduler_log.csv";
+
+// ===== DQN LOGGING =====
+static std::string log_path = std::string(getenv("HOME")) + "/Simulation/logs/DQN_scheduler_log.csv";
 static std::ofstream rl_log_file(log_path, std::ios::app);
 static bool header_written = false;
 
+static std::mt19937 rng(42);
+static std::uniform_int_distribution<int> action_dist(0, 4);
 
 
 
@@ -71,16 +72,7 @@ static bool header_written = false;
 
 scheduler_time_ai::scheduler_time_ai(const scheduler_ue_expert_config&, du_cell_index_t cell_index_) :cell_index(cell_index_)
 {
-  static bool loaded = false;
-
-  if (!loaded) {
-    std::string filepath = std::string(getenv("HOME")) + "/Simulation/weights.txt";
-    std::cout << "Loading weights from: " << filepath << std::endl;
-
-    load_weights(filepath);
-
-    loaded = true;  
-  }
+  // No weights needed for DQN data collection
 }
 
 void scheduler_time_ai::add_ue(du_ue_index_t ue_index)
@@ -94,103 +86,129 @@ void scheduler_time_ai::rem_ue(du_ue_index_t ue_index)
 }
 
 
-
 // ================= DL SCHEDULING =================
 void scheduler_time_ai::compute_ue_dl_priorities(slot_point,
                                                  slot_point pdsch_slot,
                                                  span<ue_newtx_candidate> ue_candidates)
 {
   if (!header_written) {
-    rl_log_file << "slot,ue_id,cqi,buffer,avg_rate,last_bytes,priority,tx_bytes\n";
+    rl_log_file << "slot,ue_id,"
+            << "cqi,buffer,avg_rate,last_bytes,"
+            << "action,"
+            << "reward,"
+            << "next_cqi,next_buffer,next_avg_rate,next_last_bytes\n";     
     header_written = true;
   }
 
-  last_pdsch_slot = pdsch_slot;//log
+  last_pdsch_slot = pdsch_slot;
 
-  // Clear buffer for new slot
-  slot_log_buffer.clear();//log
-
+   
   for (auto& u : ue_candidates) {
 
-    ue_ctxt& ctx = ue_history_db[u.ue->ue_index()];
-    ctx.update_dl_avg(1);
-    const ue_cell& ue_cc = u.ue->get_cc();
+  du_ue_index_t ue_id = u.ue->ue_index();
+  ue_ctxt& ctx = ue_history_db[ue_id];
 
-    double cqi = 0.0;
-    double buffer = (double)u.ue->pending_dl_newtx_bytes();
-    double avg_rate = ctx.total_dl_avg_rate();
-    double last_bytes = std::max(ctx.get_last_dl_bytes(), 1.0);
+  ctx.update_dl_avg(1);
+  const ue_cell& ue_cc = u.ue->get_cc();
 
-    // ================= CQI via MCS =================
-    const search_space_id ss_id = to_search_space_id(2);
-    const auto& ss_info = ue_cc.cfg().search_space(ss_id);
+  double cqi = 0.0;
+  double buffer = (double)u.ue->pending_dl_newtx_bytes();
+  double avg_rate = ctx.total_dl_avg_rate();
+  double last_bytes = std::max(ctx.get_last_dl_bytes(), 1.0);
 
-    const auto& pdsch_cfg =
-        ss_info.get_pdsch_config(0, ue_cc.channel_state_manager().get_nof_dl_layers());
+  // ================= CQI =================
+  const search_space_id ss_id = to_search_space_id(2);
+  const auto& ss_info = ue_cc.cfg().search_space(ss_id);
 
-    auto mcs_opt = ue_cc.link_adaptation_controller().calculate_dl_mcs(pdsch_cfg.mcs_table);
+  const auto& pdsch_cfg =
+      ss_info.get_pdsch_config(0, ue_cc.channel_state_manager().get_nof_dl_layers());
 
-    if (mcs_opt.has_value()) {
-      cqi = (double)mcs_opt.value().to_uint();
-    }
+  auto mcs_opt = ue_cc.link_adaptation_controller().calculate_dl_mcs(pdsch_cfg.mcs_table);
 
-    // ================= ESTIMATED DL RATE =================
-    double inst_rate = 1.0; // fallback
-
-    if (mcs_opt.has_value()) {
-      inst_rate = ue_cc.get_estimated_dl_rate(
-          pdsch_cfg,
-          mcs_opt.value(),
-          ss_info.dl_crb_lims.length());
-    }
-
-    // ================= PF BASELINE =================
-    double pf = inst_rate / (avg_rate + 1e-6);
-    pf = std::clamp(pf, 0.0, 100.0);
-
- 
-    // ================= NN_MODEL =================
-    //double ai = run_nn(cqi, buffer, avg_rate, last_bytes);
-    double ai = ue_ctxt::run_nn(cqi, buffer, avg_rate, last_bytes);
-
-    // Safety
-    if (!std::isfinite(ai)) {
-     ai = 0.0;
-     }
-
-    // Convert back from log
-    //double tx_pred = std::exp(ai) - 1.0;
-    double tx_pred = ai;
-
-    // Clamp AFTER conversion
-    tx_pred = std::clamp(tx_pred, 0.0, 1e7);
-
-    // ================= COMBINED PRIORITY =================
-    const double alpha = 0.4;  
-
-    double priority = (1 - alpha) * pf + alpha * tx_pred;
-    //double priority = pf * (1.0 + alpha * tx_pred / 1e5);
-    
-
-    // ================= SAFETY =================
-    if (!std::isfinite(priority)) {
-      priority = 0.1;
-    }
-
-    priority = std::clamp(priority, 1e-6, 1e6);
-
-    u.priority = priority;
-
-    // ================= LOG BUFFER =================
-    slot_log_buffer[u.ue->ue_index()] = {
-        cqi,
-        buffer,
-        avg_rate,
-        last_bytes,
-        priority,
-        0   // tx_bytes filled later
-    };
+  if (mcs_opt.has_value()) {
+    cqi = (double)mcs_opt.value().to_uint();
   }
+
+  // ================= ESTIMATED RATE =================
+  double inst_rate = 1.0;
+  if (mcs_opt.has_value()) {
+    inst_rate = ue_cc.get_estimated_dl_rate(
+        pdsch_cfg,
+        mcs_opt.value(),
+        ss_info.dl_crb_lims.length());
+  }
+
+  //double pf = inst_rate / (avg_rate + 1e-6);
+  double pf = inst_rate / std::max(avg_rate, 1.0);
+  pf = std::clamp(pf, 0.0, 100.0);
+
+  // ============================================================
+  // ===== UPDATE NEXT STATE FROM PREVIOUS SLOT 
+  // ============================================================
+  //if (slot_log_buffer.find(ue_id) != slot_log_buffer.end()) {
+    //auto& prev = slot_log_buffer[ue_id];
+
+    //prev.next_cqi = cqi;
+    //prev.next_buffer = buffer;
+    //prev.next_avg_rate = avg_rate;
+    //prev.next_last_bytes = last_bytes;
+  //}
+
+  
+  //int action = action_dist(rng);
+  std::array<float, 4> state = {
+    static_cast<float>(cqi / 27.0),
+    static_cast<float>(buffer / 1e7),
+    static_cast<float>(avg_rate / 1000.0),
+    static_cast<float>(last_bytes / 1000.0)
+  };
+  int action = dqn_inference(state);
+  action = std::clamp(action, 0, 4);
+
+  // Map action → priority
+  //double priority = pf * (1.0 + action * 0.25);
+  //double action_scale[5] = {0.8, 0.9, 1.0, 1.1, 1.2};
+  double priority = pf * action_scale[action];
+
+  // Safety
+  if (!std::isfinite(priority)) {
+    priority = 0.1;
+  }
+
+  priority = std::clamp(priority, 1e-6, 1e6);
+  u.priority = priority;
+  // ===== IF we have previous state → complete transition =====
+  if (ctx.has_prev) {
+     rl_log_file << last_pdsch_slot.slot_index() << ","
+		      << (int)ue_id << ","
+		      << ctx.prev_cqi << ","
+		      << ctx.prev_buffer << ","
+		      << ctx.prev_avg_rate << ","
+		      << ctx.prev_last_bytes << ","
+		      << ctx.prev_action << ","
+		      << ctx.prev_reward << ","
+		      << cqi << ","
+		      << buffer << ","
+		      << avg_rate << ","
+		      << last_bytes
+		      << "\n";
+	}
+
+  // ===== STORE CURRENT AS NEXT PREVIOUS =====
+  ctx.prev_cqi = cqi;
+  ctx.prev_buffer = buffer;
+  ctx.prev_avg_rate = avg_rate;
+  ctx.prev_last_bytes = last_bytes;
+  ctx.prev_action = action;
+  ctx.prev_reward = 0.0; // will be updated later
+  ctx.has_prev = true;
+
+  // ============================================================
+  // ===== STORE CURRENT STATE =====
+  // ============================================================
+  
+}
+
 }  
   
 
@@ -211,8 +229,6 @@ void scheduler_time_ai::compute_ue_ul_priorities(slot_point,
     ctx.update_ul_avg(1);
     
     const ue_cell& ue_cc = u.ue->get_cc();
-
-    
 
     // --- UL RATE ESTIMATION ---
     const search_space_id ss_id = to_search_space_id(2);
@@ -241,7 +257,7 @@ void scheduler_time_ai::compute_ue_ul_priorities(slot_point,
     // --- PF METRIC ---
     double priority = estimated_rate / (avg_rate + 1e-6);
 
-    // --- OPTIONAL: BUFFER BOOST ---
+    // --- BUFFER BOOST ---
     double buffer = u.ue->pending_ul_newtx_bytes();
     priority *= (1.0 + buffer / 1e6);
 
@@ -258,9 +274,13 @@ void scheduler_time_ai::compute_ue_ul_priorities(slot_point,
 
 void scheduler_time_ai::save_dl_newtx_grants(span<const dl_msg_alloc> dl_grants)
 {
-  int slot_id = last_pdsch_slot.slot_index();
+  // ===== STEP 1: Compute total bytes in this slot =====
+  double total_bytes = 0.0;
+  for (const auto& grant : dl_grants) {
+    total_bytes += grant.pdsch_cfg.codewords[0].tb_size_bytes;
+  }
 
-  // ===== UPDATE TX BYTES =====
+  // ===== STEP 2: Assign normalized reward per UE =====
   for (const auto& grant : dl_grants) {
 
     uint32_t bytes = grant.pdsch_cfg.codewords[0].tb_size_bytes;
@@ -268,29 +288,14 @@ void scheduler_time_ai::save_dl_newtx_grants(span<const dl_msg_alloc> dl_grants)
 
     ue_history_db[ue_id].save_dl_alloc(bytes);
 
-    // Update buffer entry
-    if (slot_log_buffer.find(ue_id) != slot_log_buffer.end()) {
-      slot_log_buffer[ue_id].tx_bytes = bytes;
-    }
+    ue_ctxt& ctx = ue_history_db[ue_id];
+
+    // Normalized reward (share of total throughput)
+    ctx.prev_reward = bytes / std::max(total_bytes, 1.0);
   }
-
-  // ===== FINAL LOGGING (ONE ROW PER UE) =====
-  for (const auto& [ue_id, entry] : slot_log_buffer) {
-
-    rl_log_file << slot_id << ","
-                << (int)ue_id << ","
-                << entry.cqi << ","
-                << entry.buffer << ","
-                << entry.avg_rate << ","
-                << entry.last_bytes << ","
-                << entry.priority << ","
-                << entry.tx_bytes
-                << "\n";
-  }
-
-  // Clear after logging
-  slot_log_buffer.clear();
 }
+
+
 
 void scheduler_time_ai::save_ul_newtx_grants(span<const ul_sched_info> ul_grants)
 {
@@ -349,41 +354,4 @@ void scheduler_time_ai::ue_ctxt::update_dl_avg(unsigned nof_slots_elapsed)
   dl_sum_alloc_bytes = 0;
 }
 
-double scheduler_time_ai::ue_ctxt::run_nn(
-    double cqi, double buffer, double avg_rate, double last_bytes)
-{
-  double x[4];
 
-  x[0] = (cqi - 19.5650219) / 7.8482252;
-  //x[1] = (buffer - 1e7);**
-  x[1] = buffer / 1e7;
-  
-  x[2] = (avg_rate - 669.139233) / 345.52287463;
-  x[3] = last_bytes / 1e5;
-  //x[3] = (last_bytes - 1.0);**
-
-  double h1[32];
-  for (int i = 0; i < 32; i++) {
-    h1[i] = B1_nn[i];
-    for (int j = 0; j < 4; j++) {
-      h1[i] += W1[i][j] * x[j];
-    }
-    h1[i] = relu(h1[i]);
-  }
-
-  double h2[32];
-  for (int i = 0; i < 32; i++) {
-    h2[i] = B2_nn[i];
-    for (int j = 0; j < 32; j++) {
-      h2[i] += W2[i][j] * h1[j];
-    }
-    h2[i] = relu(h2[i]);
-  }
-
-  double out = B3_nn[0];
-  for (int i = 0; i < 32; i++) {
-    out += W3[i] * h2[i];
-  }
-
-  return out;
-}

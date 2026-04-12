@@ -82,7 +82,6 @@ set(CMAKE_MAKEFILE_DEPENDS
   "../cmake/modules/FindMbedTLS.cmake"
   "../cmake/modules/FindROHC.cmake"
   "../cmake/modules/FindSCTP.cmake"
-  "../cmake/modules/FindUHD.cmake"
   "../cmake/modules/FindYAMLCPP.cmake"
   "../cmake/modules/FindZeroMQ.cmake"
   "../cmake/modules/build_info.cmake.in"

@@ -1,8 +1,37 @@
-build/
-*.o
-*.a
-*.so
+# =========================
+# General
+# =========================
+*.log
 logs/
-Simulation/logs/
-ran_dashboard/.venv/
+*.tmp
+*.swp
 
+# =========================
+# Python (dashboard)
+# =========================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+new-env/
+venv/
+.env/
+
+# =========================
+# srsRAN build artifacts
+# =========================
+srsRAN_Project/build/
+srsRAN_Project/*.log
+
+# =========================
+# Ignore FlexRIC entirely
+# =========================
+flexric/
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db

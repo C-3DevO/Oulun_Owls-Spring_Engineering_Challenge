@@ -45,11 +45,22 @@ private:
     void save_ul_alloc(unsigned alloc_bytes);
     void update_ul_avg(unsigned nof_slots_elapsed);
     void update_dl_avg(unsigned nof_slots_elapsed);
-    static double run_nn(double cqi, double buffer, double avg_rate, double last_bytes);
+    
 
     const du_ue_index_t       ue_index;
     const du_cell_index_t     cell_index;
     const scheduler_time_ai*  parent;
+    
+    // ===== DQN TRANSITION STORAGE =====
+    double prev_cqi = 0.0;
+    double prev_buffer = 0.0;
+    double prev_avg_rate = 0.0;
+    double prev_last_bytes = 0.0;
+
+    int prev_action = 0;
+    double prev_reward = 0.0;
+
+    bool has_prev = false;
     
 
   private:
@@ -68,13 +79,26 @@ private:
       
   // ===== RL LOGGING STRUCT =====
   struct ue_log_entry {
-   double cqi = 0.0;
-   double buffer = 0.0;
-   double avg_rate = 0.0;
-   double last_bytes = 0.0;
-   double priority = 0.0;
-   uint32_t tx_bytes = 0;};
-
+    // ===== STATE (s) =====
+    double cqi = 0.0;
+    double buffer = 0.0;
+    double avg_rate = 0.0;
+    double last_bytes = 0.0;
+    
+    // ===== ACTION =====
+    int action = 0;
+    double reward = 0.0;
+    
+    // ===== NEXT STATE (s') =====
+    double next_cqi = 0.0;
+    double next_buffer = 0.0;
+    double next_avg_rate = 0.0;
+    double next_last_bytes = 0.0;
+    
+    
+    // ===== REWARD =====
+    uint32_t tx_bytes = 0;
+};
   // ===== TEMP STORAGE PER SLOT =====
   std::unordered_map<du_ue_index_t, ue_log_entry> slot_log_buffer;
 };

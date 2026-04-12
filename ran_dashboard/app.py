@@ -8,13 +8,14 @@ import threading
 import time
 import re
 import yaml
-
+import csv
 
 app = Flask(__name__)
 
 # ---- CONFIG ----
-BASE_DIR = "/home/petros/Spring_Engineering_Project"
-CONFIG_PATH = "/home/petros/Spring_Engineering_Project/srsRAN_Project/configs/testmode.yml"
+BASE_DIR = "/home/cp3-dev0/Oulun_Owls-Spring_Engineering_Challenge"
+CONFIG_PATH = "/home/cp3-dev0/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/configs/testmode.yml"
+GNB_CONFIG_PATH = "/home/cp3-dev0/Oulun_Owls-Spring_Engineering_Challenge/srsRAN_Project/configs/gnb_custom_cell_2.yml"
 
 OPEN5GS_SERVICES = [
     "open5gs-amfd",
@@ -36,15 +37,13 @@ COMMANDS = {
     "gnb": {
         "cmd": [
             "./apps/gnb/gnb",
-            "-c", "../configs/gnb_custom_cell_properties_with_ric.yaml",
+            "-c", "../configs/gnb_custom_cell_2.yml",
             "-c", "../configs/testmode.yml"
         ],
         "cwd": f"{BASE_DIR}/srsRAN_Project/build"
     },
     "xapp": {
-        "cmd": ["./xapp_fairness_moni",
-                "-c", "/usr/local/etc/flexric/xapp_kpm.conf"
-                ],
+        "cmd": ["./xapp_oran_moni"],
         "cwd": f"{BASE_DIR}/flexric/build/examples/xApp/c/monitor"
     }
 }
@@ -57,11 +56,11 @@ DEPENDENCIES = {
 }
 
 processes = {}
-
+current_scheduler = "unknown"
 
 def generate_log_file(prefix):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    return f"/home/petros/Spring_Engineering_Project/logs/{prefix}_{timestamp}.log"
+    return f"/home/cp3-dev0/Oulun_Owls-Spring_Engineering_Challenge/logs/{prefix}_{timestamp}.log"
 
 
 # ---- OPEN5GS CONTROL ----
@@ -130,8 +129,12 @@ def parse_gnb_log():
 
         for line in lines:
             # match full UE line
+            #match = re.match(
+             #   r"\s*\d+\s+(\d+)\s+\|\s+(\d+)\s+([\d\.]+)\s+(\d+)\s+(\d+\.?\d*)M",
+              #  line)
+
             match = re.match(
-                r"\s*\d+\s+(\d+)\s+\|\s+(\d+)\s+([\d\.]+)\s+(\d+)\s+(\d+\.?\d*)M",
+                r"\s*\d+\s+(\d+)\s+\|\s+(\d+)\s+([\d\.]+)\s+(\d+)\s+([\d\.]+)M.*?([\d\.]+)M",
                 line
             )
 
@@ -141,10 +144,12 @@ def parse_gnb_log():
                 ri = float(match.group(3))
                 mcs = int(match.group(4))
                 throughput = float(match.group(5))
+                dl_bs = float(match.group(6))
 
                 ue_data[rnti] = {
                     "rnti": rnti,
                     "throughput": throughput,
+                    "dl_bs": dl_bs,
                     "cqi": cqi,
                     "ri": ri,
                     "mcs": mcs
@@ -156,124 +161,18 @@ def parse_gnb_log():
     return list(ue_data.values())
 
 
-def parse_fairness_alert():
-    log_file = processes.get("gnb_log")
-    if not log_file or not os.path.exists(log_file):
-        return {
-            "status": "UNKNOWN",
-            "raw_jain": None,
-            "norm_jain": None,
-            "rolling_mu": None,
-            "rolling_var": None,
-            "delta": None,
-            "weakest_raw_ue": None,
-            "strongest_raw_ue": None,
-            "weakest_norm_ue": None,
-            "strongest_norm_ue": None,
-            "target_ue": None,
-            "action": None,
-        }
-
-    latest_fairness = None
-    latest_policy_raw = None
-    latest_policy_norm = None
-    latest_policy_status = None
-
-    fairness_re = re.compile(
-        r"KPM FAIRNESS DL: n=(\d+) raw_jain=([-\d\.]+) norm_jain=([-\d\.]+) "
-        r"rolling_mu=([-\d\.]+) rolling_var=([-\d\.]+) delta=([-\d\.]+)"
-    )
-
-    policy_raw_re = re.compile(
-        r"KPM POLICY DL: weakest_raw_ue=(\d+) weakest_raw=([-\d\.]+) "
-        r"strongest_raw_ue=(\d+) strongest_raw=([-\d\.]+)"
-    )
-
-    policy_norm_re = re.compile(
-        r"KPM POLICY DL: weakest_norm_ue=(\d+) weakest_norm=([-\d\.]+) "
-        r"strongest_norm_ue=(\d+) strongest_norm=([-\d\.]+)"
-    )
-
-    policy_status_re = re.compile(
-        r"KPM POLICY DL: status=([A-Z_]+) action=([a-z_]+) target_ue=(\d+)(?: .*?)?$"
-    )
-
-    try:
-        with open(log_file, "r") as f:
-            for line in f:
-                m = fairness_re.search(line)
-                if m:
-                    latest_fairness = {
-                        "n": int(m.group(1)),
-                        "raw_jain": float(m.group(2)),
-                        "norm_jain": float(m.group(3)),
-                        "rolling_mu": float(m.group(4)),
-                        "rolling_var": float(m.group(5)),
-                        "delta": float(m.group(6)),
-                    }
-
-                m = policy_raw_re.search(line)
-                if m:
-                    latest_policy_raw = {
-                        "weakest_raw_ue": int(m.group(1)),
-                        "weakest_raw": float(m.group(2)),
-                        "strongest_raw_ue": int(m.group(3)),
-                        "strongest_raw": float(m.group(4)),
-                    }
-
-                m = policy_norm_re.search(line)
-                if m:
-                    latest_policy_norm = {
-                        "weakest_norm_ue": int(m.group(1)),
-                        "weakest_norm": float(m.group(2)),
-                        "strongest_norm_ue": int(m.group(3)),
-                        "strongest_norm": float(m.group(4)),
-                    }
-
-                m = policy_status_re.search(line)
-                if m:
-                    latest_policy_status = {
-                        "status": m.group(1),
-                        "action": m.group(2),
-                        "target_ue": int(m.group(3)),
-                    }
-
-    except Exception as e:
-        return {"status": "ERROR", "message": str(e)}
-
-    result = {
-        "status": "UNKNOWN",
-        "raw_jain": None,
-        "norm_jain": None,
-        "rolling_mu": None,
-        "rolling_var": None,
-        "delta": None,
-        "weakest_raw_ue": None,
-        "strongest_raw_ue": None,
-        "weakest_norm_ue": None,
-        "strongest_norm_ue": None,
-        "target_ue": None,
-        "action": None,
-    }
-
-    if latest_fairness:
-        result.update(latest_fairness)
-    if latest_policy_raw:
-        result.update(latest_policy_raw)
-    if latest_policy_norm:
-        result.update(latest_policy_norm)
-    if latest_policy_status:
-        result.update(latest_policy_status)
-
-    return result
-
 
 
 # ---- CORE FUNCTIONS ----
 
 def start_process(name):
+
     if name in processes:
-        return f"{name} already running"
+        proc = processes[name]
+        if proc.poll() is None:
+            return f"{name} already running"
+        else:
+            del processes[name]  # cleanup dead process
 
     if name == "open5gs":
         return "\n".join(start_open5gs())
@@ -365,7 +264,7 @@ def stop_process(name):
             subprocess.run(["pkill", "-f", "nearRT-RIC"])
 
         elif name == "xapp":
-            subprocess.run(["pkill", "-f", "xapp_fairness_moni"])
+            subprocess.run(["pkill", "-f", "xapp_oran_moni"])
 
         del processes[name]
         return f"{name} stopped"
@@ -425,23 +324,137 @@ def monitor_dependencies():
 
 
 # Function to update the configs from terminal
-def update_testmode_config(nof_ues, ri):
-    with open(CONFIG_PATH, 'r') as f:
-        config = yaml.safe_load(f)
+def update_testmode_config(nof_ues, ri, scheduler):
 
-    config['test_mode']['test_ue']['nof_ues'] = int(nof_ues)
-    config['test_mode']['test_ue']['ri'] = int(ri)
+    # ----------- UPDATE TEST MODE -----------
+    with open(CONFIG_PATH, 'r') as f:
+        test_config = yaml.safe_load(f)
+
+    test_config['test_mode']['test_ue']['nof_ues'] = int(nof_ues)
+    test_config['test_mode']['test_ue']['ri'] = int(ri)
 
     with open(CONFIG_PATH, 'w') as f:
-        yaml.dump(config, f)
+        yaml.dump(test_config, f)
 
-    # restart gNB
-    stop_process("gnb")
+    # ----------- UPDATE GNB CONFIG -----------
+    with open(GNB_CONFIG_PATH, 'r') as f:
+        gnb_config = yaml.safe_load(f)
+
+    if 'scheduler' not in gnb_config['cell_cfg']:
+        gnb_config['cell_cfg']['scheduler'] = {}
+
+    if scheduler == "rr_sched":
+        gnb_config['cell_cfg']['scheduler']['policy'] = {
+            "rr_sched": {}
+        }
+    elif scheduler == "qos_sched":
+        gnb_config['cell_cfg']['scheduler']['policy'] = {
+            "qos_sched": {"pf_fairness_coeff": 1.0}
+        }
+    elif scheduler == "ai_sched":
+        gnb_config['cell_cfg']['scheduler']['policy'] = {
+            "ai_sched": {}
+        }
+
+    # write first
+    with open(GNB_CONFIG_PATH, 'w') as f:
+        yaml.dump(gnb_config, f)
+
+    #  update global tracker
+    global current_scheduler
+    current_scheduler = scheduler
+
+    # ----------- RESTART -----------
+    restart_msg = restart_gnb()
+
+    return f"Config updated + Scheduler: {scheduler} + {restart_msg}"
+
+def restart_gnb():
+    print("Restarting gNB...")
+
+    # 1. Stop
+    if "gnb" in processes:
+        stop_process("gnb")
+
+    # 2. Force cleanup
+    subprocess.run(["pkill", "-f", "./apps/gnb/gnb"])
+
+    # 3. Wait for resources
+    time.sleep(2)
+
+    # 4. Start again
+    msg = start_process("gnb")
+
+    # 5.Verifying start
     time.sleep(1)
-    start_process("gnb")
 
-    return "Config updated & gNB restarted"
+    if "gnb" in processes:
+        proc = processes["gnb"]
+        if proc.poll() is not None:
+            return "❌ gNB failed to start"
 
+    return msg
+
+
+def log_metrics_to_csv(data, cell_throughput=0, fairness=0):
+    if not data:
+        return
+    scheduler = get_scheduler_from_config()
+    filename = f"/home/cp3-dev0/Oulun_Owls-Spring_Engineering_Challenge/logs/{scheduler}.csv"
+    file_exists = os.path.isfile(filename)
+
+    with open(filename, "a", newline="") as f:
+        writer = csv.writer(f)
+
+        # Write ones
+        if not file_exists:
+            writer.writerow([
+                "time",
+                "rnti",
+                "throughput",
+                "dl_bs",
+                "cqi",
+                "ri",
+                "mcs",
+                "cell_throughput",
+                "fairness",
+                "scheduler"
+            ])
+
+        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        for ue in data:
+            writer.writerow([
+                now,
+                ue.get("rnti"),
+                ue.get("throughput", 0),
+                ue.get("dl_bs", 0),
+                ue.get("cqi", 0),
+                ue.get("ri", 0),
+                ue.get("mcs", 0),
+                cell_throughput,
+                fairness,
+                scheduler
+            ])
+
+def get_scheduler_from_config():
+    try:
+        with open(GNB_CONFIG_PATH, 'r') as f:
+            gnb_config = yaml.safe_load(f)
+
+        policy = gnb_config.get("cell_cfg", {}).get("scheduler", {}).get("policy", {})
+
+        if "rr_sched" in policy:
+            return "rr_sched"
+        elif "qos_sched" in policy:
+            return "qos_sched"
+        elif "ai_sched" in policy:
+            return "ai_sched"
+
+    except Exception as e:
+        print("Scheduler read error:", e)
+
+    return "unknown"
 
 # ---- ROUTES ----
 
@@ -477,11 +490,38 @@ def status():
     return jsonify(get_status())
 
 
+#@app.route('/metrics')
+#def metrics():
+    #data = parse_gnb_log()
+    #return jsonify(data)
 @app.route('/metrics')
 def metrics():
     data = parse_gnb_log()
-    return jsonify(data)
 
+    if len(data) == 0:
+        return jsonify({
+            "ues": [],
+            "cell_throughput": 0,
+            "fairness": 0
+        })
+
+    rates = [ue["throughput"] for ue in data]
+
+    # Cell throughput
+    cell_throughput = sum(rates)
+
+    # Jain fairness
+    n = len(rates)
+    fairness = (sum(rates) ** 2) / (n * sum([r**2 for r in rates]))
+
+    # Exporting to CSV
+    log_metrics_to_csv(data, cell_throughput, fairness)
+
+    return jsonify({
+        "ues": data,
+        "cell_throughput": cell_throughput,
+        "fairness": fairness
+    })
 @app.route('/update_config', methods=['POST'])
 def update_config_route():
     data = request.json
@@ -489,16 +529,13 @@ def update_config_route():
     try:
         msg = update_testmode_config(
             data['nof_ues'],
-            data['ri']
+            data['ri'],
+            data['scheduler']
         )
         return jsonify({"msg": msg})
 
     except Exception as e:
         return jsonify({"msg": f"Error: {str(e)}"})
-
-@app.route('/fairness_alert')
-def fairness_alert():
-    return jsonify(parse_fairness_alert())
 
 
 # ---- MAIN ----

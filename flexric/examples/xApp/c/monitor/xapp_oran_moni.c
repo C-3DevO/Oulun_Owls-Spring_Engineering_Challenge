@@ -488,7 +488,9 @@ int main(int argc, char *argv[])
     sleep(1);
   }
 
-  sleep(10);
+  while(1) {
+   sleep(1);
+ } 
 
   for(int i = 0; i < n_kpm_handle; ++i) {
     rm_report_sm_xapp_api(kpm_handle[i].u.handle);
