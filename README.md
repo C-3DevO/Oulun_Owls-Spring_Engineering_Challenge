@@ -32,12 +32,21 @@ have limitations in dynamic environments.
 ---
 
 ## 🏗️ Project Structure
-Oulun_Owls-Spring_Engineering_Challenge/
-│
-├── srsRAN_Project/ # Modified srsRAN stack (AI scheduler integration)
-├── ran_dashboard/ # Flask dashboard for visualization
-├── flexric/ # External RIC framework
 
+- 📁 **Oulun_Owls-Spring_Engineering_Challenge/**
+  - Root directory of the project  
+
+  - 📁 **srsRAN_Project/**
+    - Modified 5G RAN stack  
+    - Contains AI scheduler integration (DQN / ML)  
+
+  - 📁 **ran_dashboard/**
+    - Flask-based monitoring dashboard  
+    - Visualizes throughput, fairness, and UE metrics  
+
+  - 📁 **flexric/**
+    - External RIC framework  
+    - Reserved for O-RAN experiments  
 ---
 
 ## ⚙️ System Architecture
@@ -45,27 +54,17 @@ Oulun_Owls-Spring_Engineering_Challenge/
 - **YAML Config (`testmode.yml`)**
   - Defines scheduler type and parameters  
 
-⬇️  
-
 - **Config Translator (DU Layer)**
   - Converts YAML → internal scheduler config  
-
-⬇️  
-
+ 
 - **Scheduler Factory**
-  - Selects AI scheduler  
-
-⬇️  
+  - Selects AI scheduler    
 
 - **AI Scheduler (DQN / ML)**
-  - Computes UE priorities  
-
-⬇️  
+  - Computes UE priorities   
 
 - **PRB Allocation (srsRAN)**
   - Assigns radio resources  
-
-⬇️  
 
 - **Metrics → Dashboard**
   - Visualized via Flask app
