@@ -157,24 +157,24 @@ In this scenario, UEs experience significantly different channel qualities, as s
     - Learns a balanced fairness-throughput tradeoff
     - Outperforms static policies
 
-2️⃣ Scenario B: Homogeneous CQI (Similar Channel Conditions)
+### 2️⃣ Scenario B: Homogeneous CQI (Similar Channel Conditions)
 
 In this scenario, all UEs experience similar CQI values, meaning channel conditions are nearly uniform.
 
-🔍 Observations
-
-  - DQN achieves the highest throughput
-  - All schedulers maintain high fairness (~0.95+)
-  - Differences arise mainly in efficiency (throughput)
+#### 🔍 Observations
+  
+    - DQN achieves the highest throughput
+    - All schedulers maintain high fairness (~0.95+)
+    - Differences arise mainly in efficiency (throughput)
     
-🧠 Insight
+#### 🧠 Insight
 
 👉 When CQI differences are small:
+  
+    - Fairness is naturally satisfied
+    - The problem becomes throughput optimization
 
-  - Fairness is naturally satisfied
-  - The problem becomes throughput optimization
-
-➡️ The DQN scheduler:
+#### ➡️ The DQN scheduler:
 
 Exploits small channel variations
 Achieves better spectral efficiency
@@ -182,8 +182,11 @@ Achieves better spectral efficiency
 ### ⚖️ Overall Takeaways
 
 ✅ AI adapts dynamically to network conditions
+
 ✅ Improves fairness in heterogeneous scenarios
+
 ✅ Maximizes throughput in homogeneous scenarios
+
 ✅ Outperforms RR and QoS schedulers
 
 ---
