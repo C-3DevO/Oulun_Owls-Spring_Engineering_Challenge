@@ -149,6 +149,10 @@ In this scenario, UEs experience significantly different channel qualities, as s
 - QoS scheduler maintains better fairness, but with lower throughput
 - DQN scheduler (AI) achieves high fairness while maintaining competitive throughput
 
+  <p align="center">
+  <img src="images/UnevenCQI.png" width="80%">
+</p>
+
 #### 🧠 Insight
 
 👉 When CQI varies significantly, the DQN scheduler:
@@ -166,6 +170,11 @@ In this scenario, all UEs experience similar CQI values, meaning channel conditi
     - DQN achieves the highest throughput
     - All schedulers maintain high fairness (~0.95+)
     - Differences arise mainly in efficiency (throughput)
+    
+<p align="center">
+  <img src="images/SimilarCQI.png" width="80%">
+</p>
+    
     
 #### 🧠 Insight
 
