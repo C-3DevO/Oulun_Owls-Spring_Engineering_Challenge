@@ -137,6 +137,52 @@ A Flask-based web app that provides:
 
 ---
 
+##  📊 Results and Discussion
+
+1️⃣ Scenario A: Heterogeneous CQI (Unequal Channel Conditions)
+
+In this scenario, UEs experience significantly different channel qualities, as shown by the CQI distribution.
+
+🔍 Observations
+Round Robin (RR) achieves the highest throughput, but at the cost of fairness
+QoS scheduler maintains better fairness, but with lower throughput
+DQN scheduler (AI) achieves high fairness while maintaining competitive throughput
+🧠 Insight
+
+👉 When CQI varies significantly, the DQN scheduler:
+
+Prevents starvation of low-CQI users
+Learns a balanced fairness-throughput tradeoff
+Outperforms static policies
+
+2️⃣ Scenario B: Homogeneous CQI (Similar Channel Conditions)
+
+In this scenario, all UEs experience similar CQI values, meaning channel conditions are nearly uniform.
+
+🔍 Observations
+DQN achieves the highest throughput
+All schedulers maintain high fairness (~0.95+)
+Differences arise mainly in efficiency (throughput)
+🧠 Insight
+
+👉 When CQI differences are small:
+
+Fairness is naturally satisfied
+The problem becomes throughput optimization
+
+➡️ The DQN scheduler:
+
+Exploits small channel variations
+Achieves better spectral efficiency
+
+⚖️ Overall Takeaways
+✅ AI adapts dynamically to network conditions
+✅ Improves fairness in heterogeneous scenarios
+✅ Maximizes throughput in homogeneous scenarios
+✅ Outperforms RR and QoS schedulers
+
+---
+
 ## 🛠️ Setup Instructions
 
 ### 1. Clone the repository
