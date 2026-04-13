@@ -3,14 +3,15 @@ cell_cfg:
   channel_bandwidth_MHz: 20
   common_scs: 30
   dl_arfcn: 632628
-  nof_antennas_dl: 2
-  nof_antennas_ul: 2
+  nof_antennas_dl: 4
+  nof_antennas_ul: 4
   pci: 1
   plmn: '00101'
   scheduler:
     nof_preselected_newtx_ues: 10
     policy:
-      ai_sched: {}
+      qos_sched:
+        pf_fairness_coeff: 1.0
   tac: 7
 cells:
 - channel_bandwidth_MHz: 20

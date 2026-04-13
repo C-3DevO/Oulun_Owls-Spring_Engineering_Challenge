@@ -580,6 +580,15 @@ function updateCellMetrics(data) {
     cellData.datasets[0].data.push(data.cell_throughput);
     fairnessData.datasets[0].data.push(data.fairness);
 
+    const values = cellData.datasets[0].data;
+    if (values.length > 0) {
+        const max = Math.max(...values);
+
+        cellChart.options.scales.y.min = 0;
+        cellChart.options.scales.y.max = max * 1.65;
+    }
+
+
     cellChart.update();
     fairnessChart.update();
 }
@@ -637,7 +646,7 @@ function updateDlMetrics(ues) {
         const max = Math.max(...allValues);
 
         dlChart.options.scales.y.min = 0;
-        dlChart.options.scales.y.max = max * 1.2;
+        dlChart.options.scales.y.max = 11;
     }
 
     dlChart.update();
