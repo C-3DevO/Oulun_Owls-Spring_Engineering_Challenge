@@ -141,7 +141,7 @@ A Flask-based web app that provides:
 
 ### 1️⃣ Scenario A: Heterogeneous CQI (Unequal Channel Conditions)
 
-In this scenario, UEs experience significantly different channel qualities, as shown by the CQI distribution.
+In this scenario, UEs experience significantly different channel qualities, as shown by the CQI distribution. Strong and weak users are easily distinguished.
 
 #### 🔍 Observations
 
