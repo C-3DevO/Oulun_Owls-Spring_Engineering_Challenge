@@ -31,7 +31,14 @@ pipeline {
                 sh './ci/scripts/test.sh'
             }
         }
-    }
+    
+    
+       stage('Scheduler Integration Test') {
+           steps {
+                 sh './ci/scripts/test_scheduler.sh'
+            }
+       }
+      }
 
     post {
 

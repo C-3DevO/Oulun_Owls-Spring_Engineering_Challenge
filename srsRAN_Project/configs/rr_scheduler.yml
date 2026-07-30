@@ -1,0 +1,4 @@
+cell_cfg:
+  scheduler:
+    policy:
+      rr_sched: {}
