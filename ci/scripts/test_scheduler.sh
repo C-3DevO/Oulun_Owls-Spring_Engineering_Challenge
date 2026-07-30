@@ -1,10 +1,15 @@
 #!/bin/bash
 set -e
 
-# Project paths
+# ROOT Directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+cd "${REPO_ROOT}"
+
 PROJECT_DIR="srsRAN_Project"
 BUILD_DIR="${PROJECT_DIR}/build"
 CONFIG_DIR="${PROJECT_DIR}/configs"
+
 
 run_scheduler()
 {
