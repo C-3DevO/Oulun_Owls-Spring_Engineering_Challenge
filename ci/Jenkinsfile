@@ -1,0 +1,50 @@
+pipeline {
+
+    agent any
+
+    options {
+        timestamps()
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Configure') {
+            steps {
+                sh './ci/scripts/configure.sh'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh './ci/scripts/build.sh'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh './ci/scripts/test.sh'
+            }
+        }
+    }
+
+    post {
+
+        success {
+            echo 'Build completed successfully.'
+        }
+
+        failure {
+            echo 'Build failed.'
+        }
+
+        always {
+            archiveArtifacts artifacts: 'srsRAN_Project/build/**/*.log', allowEmptyArchive: true
+        }
+    }
+}
