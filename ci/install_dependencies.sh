@@ -17,6 +17,7 @@ apt-get install -y \
     libyaml-cpp-dev \
     libsctp-dev \
     libfftw3-dev \
+    libgtest-dev \
     libzmq3-dev
 
 echo ""
