@@ -9,4 +9,6 @@ rm -rf build
 mkdir -p build
 cd build
 
-cmake .. -DENABLE_UHD=OFF
+cmake .. \
+    -DENABLE_UHD=OFF \
+    -DBUILD_TESTING=ON

@@ -8,12 +8,6 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
         stage('Configure') {
             steps {
                 sh './ci/scripts/configure.sh'
@@ -26,14 +20,14 @@ pipeline {
             }
         }
 
-        stage('Test') {
+        stage('Scheduler Policy Unit Tests') {
             steps {
                 sh './ci/scripts/test.sh'
             }
         }
     
     
-       stage('Scheduler Integration Test') {
+       stage('Scheduler Integration Tests') {
            steps {
                  sh './ci/scripts/test_scheduler.sh'
             }
@@ -51,7 +45,7 @@ pipeline {
         }
 
         always {
-            archiveArtifacts artifacts: 'srsRAN_Project/build/**/*.log', allowEmptyArchive: true
+             archiveArtifacts artifacts: '**/*.log', fingerprint: true, allowEmptyArchive: true
         }
     }
 }

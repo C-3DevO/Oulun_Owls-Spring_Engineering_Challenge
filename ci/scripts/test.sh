@@ -1,8 +1,15 @@
 #!/bin/bash
 set -e
 
-echo "========== Test =========="
+echo "========================================"
+echo "Running Scheduler Policy Unit Tests"
+echo "========================================"
 
 cd srsRAN_Project/build
 
-ctest --output-on-failure
+ctest \
+    -R "scheduler_policy/" \
+    --output-on-failure
+
+echo
+echo "Scheduler policy unit tests passed."

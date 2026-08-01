@@ -45,7 +45,8 @@ using namespace srsran;
 /// The current types are:
 /// - time_rr - Time based Round-Robin scheduler.
 /// - time_qos - Time based QoS-aware scheduler.
-enum class policy_scheduler_type { time_rr, time_qos };
+/// - time_ai - Time based DQN scheduler added
+enum class policy_scheduler_type { time_rr, time_qos, time_ai };
 
 class base_scheduler_policy_test
 {
@@ -60,8 +61,9 @@ protected:
     res_logger(false, cell_cfg_req.pci),
     sched_cfg([&sched_cfg_, policy]() {
       if (policy == policy_scheduler_type::time_qos) {
-        sched_cfg_.ue.policy_cfg = time_qos_scheduler_config{};
-      }
+          sched_cfg_.ue.policy_cfg = time_qos_scheduler_config{}; }
+      else if (policy == policy_scheduler_type::time_ai) {
+          sched_cfg_.ue.policy_cfg = time_ai_scheduler_config{};}
       return sched_cfg_;
     }()),
     cell_cfg(*[this]() {
@@ -869,11 +871,12 @@ TEST_P(scheduler_policy_alloc_bounds_test, scheduler_allocates_pusch_within_conf
 
 INSTANTIATE_TEST_SUITE_P(scheduler_policy,
                          scheduler_policy_test,
-                         testing::Values(policy_scheduler_type::time_rr, policy_scheduler_type::time_qos));
+                         testing::Values(policy_scheduler_type::time_rr, policy_scheduler_type::time_qos, policy_scheduler_type::time_ai));
 INSTANTIATE_TEST_SUITE_P(scheduler_policy,
                          scheduler_policy_partial_slot_tdd_test,
-                         testing::Values(policy_scheduler_type::time_rr, policy_scheduler_type::time_qos));
+                         testing::Values(policy_scheduler_type::time_rr, policy_scheduler_type::time_qos, policy_scheduler_type::time_ai));
 INSTANTIATE_TEST_SUITE_P(scheduler_policy,
                          scheduler_policy_alloc_bounds_test,
-                         testing::Values(policy_scheduler_type::time_rr, policy_scheduler_type::time_qos));
+                         testing::Values(policy_scheduler_type::time_rr, policy_scheduler_type::time_qos, policy_scheduler_type::time_ai));
+
 INSTANTIATE_TEST_SUITE_P(scheduler_policy, scheduler_pf_qos_test, testing::Values(128000, 256000));
