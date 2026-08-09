@@ -55,7 +55,7 @@ void scheduler_time_rr::compute_ue_dl_priorities(slot_point               pdcch_
       << "frame,"
       << "slot,"
       << "ue_id,"
-      << "report_cqi,"
+      << "reported_cqi,"
       << "buffer,"
       << "avg_rate,"
       << "estimated_rate,"
@@ -67,7 +67,7 @@ void scheduler_time_rr::compute_ue_dl_priorities(slot_point               pdcch_
       << "mcs,"
       << "harq,"
       << "reward,"
-      << "next_cqi,"
+      << "next_reported_cqi,"
       << "next_buffer,"
       << "next_avg_rate,"
       << "next_estimated_rate\n";

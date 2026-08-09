@@ -89,6 +89,30 @@ private:
     double dl_prio = forbid_prio;
     /// UL priority value of the UE.
     double ul_prio = forbid_prio;
+    
+    // ---------- RL logging state ----------
+
+    // Previous state
+    double prev_cqi = 0;
+    double prev_buffer = 0;
+    double prev_avg_rate = 0;
+    double prev_est_rate = 0;
+    double prev_pf = 0;
+    
+    double prev_priority = 0;
+    bool has_prev = false;
+
+    // Action taken
+    bool scheduled = false;
+
+    uint32_t allocated_prbs = 0;
+    uint32_t allocated_bytes = 0;
+
+    uint8_t logged_mcs = 0;
+    uint8_t prev_logged_mcs = 0;;
+
+    unsigned harq = 0;
+    double reward = 0;
 
   private:
     void compute_dl_avg_rate(const slice_ue& u, unsigned nof_slots_elapsed);

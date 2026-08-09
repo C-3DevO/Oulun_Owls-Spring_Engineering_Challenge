@@ -4,7 +4,7 @@
 #include "srsran/adt/slotted_array.h"
 #include "srsran/scheduler/config/scheduler_expert_config.h"
 #include "srsran/support/math/exponential_averager.h"
-#include <unordered_map>  
+#include <unordered_map>
 
 namespace srsran {
 
@@ -17,12 +17,12 @@ public:
   void add_ue(du_ue_index_t ue_index) override;
   void rem_ue(du_ue_index_t ue_index) override;
 
-  void compute_ue_dl_priorities(slot_point               pdcch_slot,
-                                slot_point               pdsch_slot,
+  void compute_ue_dl_priorities(slot_point              pdcch_slot,
+                                slot_point              pdsch_slot,
                                 span<ue_newtx_candidate> ue_candidates) override;
 
-  void compute_ue_ul_priorities(slot_point               pdcch_slot,
-                                slot_point               pusch_slot,
+  void compute_ue_ul_priorities(slot_point              pdcch_slot,
+                                slot_point              pusch_slot,
                                 span<ue_newtx_candidate> ue_candidates) override;
 
   void save_dl_newtx_grants(span<const dl_msg_alloc> dl_grants) override;
@@ -35,33 +35,76 @@ private:
   const double exp_avg_alpha = 0.01;
 
   struct ue_ctxt {
-    ue_ctxt(du_ue_index_t ue_index_, du_cell_index_t cell_index_, const scheduler_time_ai* parent_);
+    ue_ctxt(du_ue_index_t ue_index_,
+            du_cell_index_t cell_index_,
+            const scheduler_time_ai* parent_);
 
-    [[nodiscard]] double total_dl_avg_rate() const { return total_dl_avg_rate_.get_average_value(); }
-    [[nodiscard]] double total_ul_avg_rate() const { return total_ul_avg_rate_.get_average_value(); }
-    [[nodiscard]] double get_last_dl_bytes() const { return dl_sum_alloc_bytes; }
+    [[nodiscard]] double total_dl_avg_rate() const
+    {
+      return total_dl_avg_rate_.get_average_value();
+    }
+
+    [[nodiscard]] double total_ul_avg_rate() const
+    {
+      return total_ul_avg_rate_.get_average_value();
+    }
+
+    [[nodiscard]] double get_last_dl_bytes() const
+    {
+      return allocated_bytes;
+    }
 
     void save_dl_alloc(uint32_t total_alloc_bytes);
     void save_ul_alloc(unsigned alloc_bytes);
     void update_ul_avg(unsigned nof_slots_elapsed);
     void update_dl_avg(unsigned nof_slots_elapsed);
-    
 
     const du_ue_index_t       ue_index;
     const du_cell_index_t     cell_index;
     const scheduler_time_ai*  parent;
     
-    // ===== DQN TRANSITION STORAGE =====
-    double prev_cqi = 0.0;
-    double prev_buffer = 0.0;
-    double prev_avg_rate = 0.0;
-    double prev_last_bytes = 0.0;
+    slot_point prev_pdsch_slot;
 
-    int prev_action = 0;
-    double prev_reward = 0.0;
+    // ============================================================
+    // DQN TRANSITION STORAGE
+    // ============================================================
+
+    // Previous state
+    double prev_cqi            = 0.0;
+    double prev_buffer         = 0.0;
+    double prev_avg_rate       = 0.0;
+    double prev_last_bytes     = 0.0;
+
+    // Diagnostic state features
+    double prev_estimated_rate = 0.0;
+    double prev_pf_metric      = 0.0;
+
+    // Previous DQN decision
+    int    prev_action         = 0;
+    double prev_scale          = 1.0;
+    double prev_priority       = 0.0;
+
+    // Previous transition reward
+    double prev_reward         = 0.0;
 
     bool has_prev = false;
-    
+
+    // ============================================================
+    // CURRENT SCHEDULING OUTCOME
+    // ============================================================
+
+    bool scheduled = false;
+
+    uint32_t allocated_prbs  = 0;
+    uint32_t allocated_bytes = 0;
+
+    uint8_t mcs      = 0;
+    uint8_t prev_mcs = 0;
+
+    uint8_t harq_id = 0;
+    bool    harq_retx = false;
+
+    double reward = 0.0;
 
   private:
     unsigned dl_sum_alloc_bytes = 0;
@@ -75,32 +118,6 @@ private:
 
   slot_point last_pdsch_slot;
   slot_point last_pusch_slot;
-  
-      
-  // ===== RL LOGGING STRUCT =====
-  struct ue_log_entry {
-    // ===== STATE (s) =====
-    double cqi = 0.0;
-    double buffer = 0.0;
-    double avg_rate = 0.0;
-    double last_bytes = 0.0;
-    
-    // ===== ACTION =====
-    int action = 0;
-    double reward = 0.0;
-    
-    // ===== NEXT STATE (s') =====
-    double next_cqi = 0.0;
-    double next_buffer = 0.0;
-    double next_avg_rate = 0.0;
-    double next_last_bytes = 0.0;
-    
-    
-    // ===== REWARD =====
-    uint32_t tx_bytes = 0;
-};
-  // ===== TEMP STORAGE PER SLOT =====
-  std::unordered_map<du_ue_index_t, ue_log_entry> slot_log_buffer;
 };
 
 } // namespace srsran

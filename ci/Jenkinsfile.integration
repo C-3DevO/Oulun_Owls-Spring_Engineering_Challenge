@@ -20,32 +20,27 @@ pipeline {
             }
         }
 
-        stage('Scheduler Policy Unit Tests') {
+        stage('Scheduler Integration Tests') {
             steps {
-                sh './ci/scripts/test.sh'
+                sh './ci/scripts/test_scheduler.sh'
             }
         }
-    
-    
-       stage('Scheduler Integration Tests') {
-           steps {
-                 sh './ci/scripts/test_scheduler.sh'
-            }
-       }
-      }
+    }
 
     post {
 
         success {
-            echo 'Build completed successfully.'
+            echo 'Scheduler integration tests passed.'
         }
 
         failure {
-            echo 'Build failed.'
+            echo 'Scheduler integration tests failed.'
         }
 
         always {
-             archiveArtifacts artifacts: '**/*.log', fingerprint: true, allowEmptyArchive: true
+            archiveArtifacts artifacts: '**/*.log',
+                             fingerprint: true,
+                             allowEmptyArchive: true
         }
     }
 }

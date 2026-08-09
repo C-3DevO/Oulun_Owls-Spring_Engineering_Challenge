@@ -31,9 +31,11 @@
 
 using namespace srsran;
 
-static std::string log_path = std::string(getenv("HOME")) + "/Simulation/logs/rl_dataset.csv";
+static std::string log_path = std::string(getenv("HOME")) + "/Oulun_Owls-Spring_Engineering_Challenge/logs/QOS_scheduler_log.csv";
 static std::ofstream rl_log_file(log_path, std::ios::app);
 static bool header_written = false;
+// Counts every scheduler invocation and Used only for logging RL state transition
+static uint64_t system_slot_counter = 0;
 
 // [Implementation-defined] Limit for the coefficient of the proportional fair metric to avoid issues with double
 // imprecision.
@@ -66,6 +68,9 @@ void scheduler_time_qos::compute_ue_dl_priorities(slot_point               pdcch
   unsigned nof_slots_elapsed = std::min(last_pdsch_slot.valid() ? pdsch_slot - last_pdsch_slot : 1U, MAX_SLOT_SKIPPED);
   last_pdsch_slot            = pdsch_slot;
   
+  // Increment logging slot counter
+  system_slot_counter++;
+  
   // Compute UE candidate priorities.
   for (auto& u : ue_candidates) {
 
@@ -79,7 +84,6 @@ void scheduler_time_qos::compute_ue_dl_priorities(slot_point               pdcch
     // FEATURE EXTRACTION
     const ue_cell& ue_cc = u.ue->get_cc();
 
-    double cqi = 0.0;
     double buffer = static_cast<double>(u.ue->pending_dl_newtx_bytes());
     double avg_rate = uectxt.total_dl_avg_rate(); // correct PF avg
 
@@ -89,28 +93,101 @@ void scheduler_time_qos::compute_ue_dl_priorities(slot_point               pdcch
 
     const auto& pdsch_cfg =
         ss_info.get_pdsch_config(0, ue_cc.channel_state_manager().get_nof_dl_layers());
-
+    //improved this 
     auto mcs_opt = ue_cc.link_adaptation_controller().calculate_dl_mcs(pdsch_cfg.mcs_table);
+    const auto reported_cqi = ue_cc.channel_state_manager().get_wideband_cqi();
 
+    double cqi = reported_cqi.to_uint();
+
+    //mcs calculated separately
     if (mcs_opt.has_value()) {
-      cqi = static_cast<double>(mcs_opt.value().to_uint());
+        uectxt.logged_mcs = mcs_opt.value().to_uint();
     }
 
-    double last_bytes = uectxt.get_last_dl_bytes();
+    
+    // Estimated instantaneous rate
+    double estimated_rate = 1.0;
 
-    double pf_priority = uectxt.dl_prio;
+    if (mcs_opt.has_value()) {
+	    estimated_rate =
+		ue_cc.get_estimated_dl_rate(
+		    pdsch_cfg,
+		    mcs_opt.value(),
+		    ss_info.dl_crb_lims.length());
+	}
+
+    // Pure proportional-fair metric
+    double pf_metric = estimated_rate / std::max(avg_rate, 1.0);
+
+    // Final QoS priority already computed by compute_dl_prio()
+    double qos_priority = uectxt.dl_prio;
 
     // LOGGING 
     if (!header_written) {
-      rl_log_file << "cqi,buffer,avg_rate,last_bytes,pf_priority\n";
+       rl_log_file
+	    << "system_slot,"
+	    << "frame,"
+	    << "slot,"
+	    << "ue_id,"
+	    << "reported_cqi,"
+	    << "buffer,"
+	    << "avg_rate,"
+	    << "estimated_rate,"
+	    << "pf_metric,"
+	    << "qos_priority,"
+	    << "scheduled,"
+	    << "allocated_prbs,"
+	    << "allocated_bytes,"
+	    << "mcs,"
+	    << "harq,"
+	    << "reward,"
+	    << "next_reported_cqi,"
+	    << "next_buffer,"
+	    << "next_avg_rate,"
+	    << "next_estimated_rate\n";
       header_written = true;
     }
 
-    rl_log_file << cqi << ","
-                << buffer << ","
-                << avg_rate << ","
-                << last_bytes << ","
-                << pf_priority << "\n";
+    if (uectxt.has_prev) {
+    rl_log_file
+        << system_slot_counter << ","
+        << pdsch_slot.sfn() << ","
+        << pdsch_slot.slot_index() << ","
+        << u.ue->ue_index() << ","
+        << uectxt.prev_cqi << ","
+        << uectxt.prev_buffer << ","
+        << uectxt.prev_avg_rate << ","
+        << uectxt.prev_est_rate << ","
+        << uectxt.prev_pf << ","
+        << uectxt.prev_priority << ","
+        << uectxt.scheduled << ","
+        << uectxt.allocated_prbs << ","
+        << uectxt.allocated_bytes << ","
+        << unsigned(uectxt.prev_logged_mcs) << ","
+        << uectxt.harq << ","
+        << uectxt.reward << ","
+        << cqi << ","
+        << buffer << ","
+        << avg_rate << ","
+        << estimated_rate
+        << "\n";
+   }
+   //resetting
+   uectxt.scheduled = false;
+   uectxt.allocated_bytes = 0;
+   uectxt.allocated_prbs = 0;
+   uectxt.reward = 0;
+   uectxt.harq   = false;
+   
+   //saving previous
+   uectxt.prev_cqi = cqi;
+   uectxt.prev_buffer = buffer;
+   uectxt.prev_avg_rate = avg_rate;
+   uectxt.prev_est_rate = estimated_rate;
+   uectxt.prev_pf       = pf_metric;
+   uectxt.prev_priority = qos_priority;
+   uectxt.prev_logged_mcs = uectxt.logged_mcs;
+   uectxt.has_prev = true;
   }
 }
 
@@ -134,7 +211,18 @@ void scheduler_time_qos::save_dl_newtx_grants(span<const dl_msg_alloc> dl_grants
 {
   // Save result of DL grants in UE history.
   for (const dl_msg_alloc& grant : dl_grants) {
-    ue_history_db[grant.context.ue_index].save_dl_alloc(grant.pdsch_cfg.codewords[0].tb_size_bytes, grant.tb_list[0]);
+    auto& ctx = ue_history_db[grant.context.ue_index];
+    ctx.save_dl_alloc(grant.pdsch_cfg.codewords[0].tb_size_bytes,grant.tb_list[0]);
+
+    ctx.scheduled = true;
+
+    ctx.allocated_bytes = grant.pdsch_cfg.codewords[0].tb_size_bytes;
+    if (grant.pdsch_cfg.rbs.is_type1()) { 
+       ctx.allocated_prbs = grant.pdsch_cfg.rbs.type1().length();
+    }
+    ctx.harq = !grant.pdsch_cfg.codewords[0].new_data;
+
+    ctx.reward = ctx.allocated_bytes;
   }
 }
 
@@ -150,7 +238,8 @@ void scheduler_time_qos::save_ul_newtx_grants(span<const ul_sched_info> ul_grant
 
 // [Implementation-defined] Helper value to set a maximum metric weight that is low enough to avoid overflows during
 // the final QoS weight computation.
-static constexpr double max_metric_weight = 1.0e12;
+//static constexpr double max_metric_weight = 1.0e12;
+static constexpr double max_metric_weight = 1.0e3;
 
 static double compute_pf_metric(double estim_rate, double avg_rate, double fairness_coeff)
 {

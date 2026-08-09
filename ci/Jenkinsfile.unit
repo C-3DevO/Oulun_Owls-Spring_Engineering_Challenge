@@ -1,0 +1,49 @@
+pipeline {
+
+    agent any
+
+    options {
+        timestamps()
+    }
+
+    stages {
+
+        stage('Configure') {
+            steps {
+                sh './ci/scripts/configure.sh'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh './ci/scripts/build.sh'
+            }
+        }
+
+        stage('Scheduler Policy Unit Tests') {
+            steps {
+                sh './ci/scripts/test.sh'
+            }
+        }
+    }
+
+    post {
+
+        success {
+
+            echo 'Scheduler unit tests passed.'
+
+            build job: 'Scheduler_Integration_Tests'
+        }
+
+        failure {
+            echo 'Scheduler unit tests failed.'
+        }
+
+        always {
+            archiveArtifacts artifacts: '**/*.log',
+                             fingerprint: true,
+                             allowEmptyArchive: true
+        }
+    }
+}
