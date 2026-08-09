@@ -8,6 +8,12 @@ pipeline {
 
     stages {
 
+        stage('Install Dependencies') {
+            steps {
+                sh './ci/install_dependencies.sh'
+            }
+        }
+
         stage('Configure') {
             steps {
                 sh './ci/scripts/configure.sh'
