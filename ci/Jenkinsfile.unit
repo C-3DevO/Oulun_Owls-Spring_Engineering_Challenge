@@ -1,6 +1,10 @@
 pipeline {
 
-    agent any
+    agent {
+        docker {
+            image 'srsran-ci:latest'
+        }
+    }
 
     options {
         timestamps()
@@ -30,9 +34,7 @@ pipeline {
     post {
 
         success {
-
             echo 'Scheduler unit tests passed.'
-
             build job: 'Scheduler_Integration_Tests'
         }
 
