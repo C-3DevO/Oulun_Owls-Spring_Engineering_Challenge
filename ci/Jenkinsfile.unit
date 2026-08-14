@@ -1,18 +1,16 @@
 pipeline {
 
-    agent any
+    agent {
+        docker {
+            image 'c3devo/oulunowls:v1_1408'
+        }
+    }
 
     options {
         timestamps()
     }
 
     stages {
-
-        stage('Install Dependencies') {
-            steps {
-                sh './ci/install_dependencies.sh'
-            }
-        }
 
         stage('Configure') {
             steps {

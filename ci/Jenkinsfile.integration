@@ -1,6 +1,10 @@
 pipeline {
 
-    agent any
+    agent {
+        docker {
+            image 'c3devo/oulunowls:v1_1408'
+        }
+    }
 
     options {
         timestamps()

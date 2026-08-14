@@ -1,7 +1,9 @@
 FROM debian:trixie
 
-COPY install_dependencies.sh .
+COPY install_dependencies.sh /tmp/install_dependencies.sh
 
-RUN chmod +x install_dependencies.sh
+RUN chmod +x /tmp/install_dependencies.sh && \
+    /tmp/install_dependencies.sh && \
+    rm /tmp/install_dependencies.sh
 
-RUN ./install_dependencies.sh
+WORKDIR /workspace

@@ -2,7 +2,7 @@
 set -e
 
 echo "========================================="
-echo "Installing srsRAN build dependencies..."
+echo "Installing srsRAN CI build dependencies"
 echo "========================================="
 
 apt-get update
@@ -20,7 +20,9 @@ apt-get install -y \
     libgtest-dev \
     libzmq3-dev
 
-echo ""
+rm -rf /var/lib/apt/lists/*
+
+echo
 echo "========================================="
 echo "Installation complete!"
 echo "========================================="

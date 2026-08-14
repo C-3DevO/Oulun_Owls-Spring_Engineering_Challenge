@@ -219,18 +219,27 @@ void scheduler_time_rr::save_dl_newtx_grants(span<const dl_msg_alloc> dl_grants)
   // Mark the count for the allocated UEs.
   for (const auto& grant : dl_grants) {
     auto& ctx = log_db[grant.context.ue_index];
+    // Scheduling outcome
     ctx.scheduled = true;
-
+    
+    // Allocated bytes
     ctx.allocated_bytes = grant.pdsch_cfg.codewords[0].tb_size_bytes;
     ctx.bytes_this_slot += ctx.allocated_bytes;
-
-    // reward left raw for now
+    
+    // Allocated PRBs
+    if (grant.pdsch_cfg.rbs.is_type1()) {
+      ctx.allocated_prbs =
+          grant.pdsch_cfg.rbs.type1().length();
+    }
+    
+    // reward
     ctx.reward = ctx.allocated_bytes;
-  
+    // RR bookkeeping
     ue_last_dl_alloc_count[grant.context.ue_index] = dl_alloc_count;
   }
   ++dl_alloc_count;
 }
+
 
 void scheduler_time_rr::save_ul_newtx_grants(span<const ul_sched_info> ul_grants)
 {
@@ -244,3 +253,5 @@ void scheduler_time_rr::save_ul_newtx_grants(span<const ul_sched_info> ul_grants
   }
   ++ul_alloc_count;
 }
+
+

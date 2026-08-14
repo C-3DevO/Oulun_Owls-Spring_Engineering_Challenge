@@ -5,4 +5,4 @@ echo "========== Build =========="
 
 cd srsRAN_Project/build
 
-make -j"$(nproc)"
+cmake --build . --parallel "$(nproc)"
