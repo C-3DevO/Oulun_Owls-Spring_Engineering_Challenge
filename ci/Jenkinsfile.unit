@@ -2,7 +2,7 @@ pipeline {
 
     agent {
         docker {
-            image 'c3devo/oulunowls:v1_1408'
+            image 'c3devo/oulunowls:v1_2008'
         }
     }
 
