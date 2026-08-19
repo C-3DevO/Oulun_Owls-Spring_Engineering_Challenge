@@ -5,4 +5,4 @@ echo "========== Build =========="
 
 cd srsRAN_Project/build
 
-cmake --build . --parallel "$(nproc)"
+CCACHE_DISABLE=1 cmake --build . --parallel "$(nproc)"
