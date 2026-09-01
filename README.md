@@ -49,6 +49,8 @@ Oulun_Owls-Spring_Engineering_Challenge/
 ├── images/                # Experimental figures
 ├── ci/                    # CI scripts
 └── README.md
+```
+---
 ## ⚙️ System Architecture
 
 The scheduling pipeline operates entirely inside the modified **srsRAN gNB**.
