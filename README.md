@@ -1,8 +1,8 @@
 # 📡 AI-Driven RAN Scheduling & Monitoring Platform
 
-This project presents an **AI-powered Radio Access Network (RAN) scheduling system** built on top of **srsRAN**, combined with a **real-time monitoring dashboard**.
+This project presents an **AI-powered Radio Access Network (RAN) scheduling system** built on top of **srsRAN**, combined with a **real-time monitoring dashboard** and **FlexRIC-based RAN monitoring**.
 
-It demonstrates how  Reinforcement Learning can be used to improve **resource allocation, fairness, and throughput** in 5G networks.
+It demonstrates how **offline Artificial Intelligence scheduling** can improve **Physical Resource Block (PRB) allocation, throughput, and fairness** in a practical 5G New Radio testbed.
 
 ---
 
@@ -11,192 +11,213 @@ It demonstrates how  Reinforcement Learning can be used to improve **resource al
 Modern 5G networks rely heavily on efficient scheduling of radio resources (PRBs). Traditional schedulers such as:
 
 - Round Robin (RR)
-- Proportional Fair (PF)
-- Max-CQI
+- Proportional Fair (QoS/PF)
 
-have limitations in dynamic environments.
+provide reliable baseline performance but often struggle to balance throughput and fairness across varying channel conditions.
 
-👉 This project introduces an **AI-based scheduler** that learns optimal allocation strategies using data-driven approaches.
+👉 This project introduces three **offline AI-based schedulers** trained from real scheduler experience collected from the srsRAN MAC scheduler:
+
+- **SLR** – Supervised Learning Ranker
+- **CQL** – Conservative Q-Learning
+- **IQL** – Implicit Q-Learning
+
+The learned policies are evaluated against the classical schedulers under multiple network conditions.
 
 ---
 
 ## 🧠 Key Features
 
-- ✅ AI-based scheduler (Linear Regression + Reinforcement Learning)
-- ✅ Integration with **srsRAN (5G stack)**
-- ✅ YAML-driven configuration for flexible experimentation
-- ✅ Real-time metrics collection (CQI, throughput, buffer, fairness)
-- ✅ Interactive web dashboard for visualization
-- ✅ Comparison with traditional schedulers (RR, PF)
+- ✅ End-to-end **srsRAN + Open5GS** 5G testbed
+- ✅ Offline replay-buffer generation from MAC scheduler logs
+- ✅ Three AI schedulers (SLR, CQL, and IQL)
+- ✅ Integration with **FlexRIC** Near-RT RIC
+- ✅ Real-time Flask monitoring dashboard
+- ✅ CQI, throughput, fairness, and buffer monitoring
+- ✅ Comparative evaluation across four experimental scenarios
 
 ---
 
 ## 🏗️ Project Structure
 
-- 📁 **Oulun_Owls-Spring_Engineering_Challenge/**
-  - Root directory of the project  
-
-  - 📁 **srsRAN_Project/**
-    - Modified 5G RAN stack  
-    - Contains AI scheduler integration (DQN / ML)  
-
-  - 📁 **ran_dashboard/**
-    - Flask-based monitoring dashboard  
-    - Visualizes throughput, fairness, and UE metrics  
-
-  - 📁 **flexric/**
-    - External RIC framework  
-    - Reserved for O-RAN experiments  
----
-
+```text
+Oulun_Owls-Spring_Engineering_Challenge/
+├── srsRAN_Project/        # Modified srsRAN with AI scheduler integration
+├── flexric/               # Near-RT RIC and xApp framework
+├── ran_dashboard/         # Flask monitoring dashboard
+├── model_items/           # Training and evaluation models
+├── logs/                  # Scheduler logs and replay datasets
+├── images/                # Experimental figures
+├── ci/                    # CI scripts
+└── README.md
 ## ⚙️ System Architecture
 
-- **YAML Config (`testmode.yml`)**
-  - Defines scheduler type and parameters  
+The scheduling pipeline operates entirely inside the modified **srsRAN gNB**.
 
-- **Config Translator (DU Layer)**
-  - Converts YAML → internal scheduler config  
- 
-- **Scheduler Factory**
-  - Selects AI scheduler    
+1. **Traffic Generation**
+   - Software UEs generate downlink traffic.
 
-- **AI Scheduler (DQN / ML)**
-  - Computes UE priorities   
+2. **MAC Scheduler**
+   - Collects CQI, buffer occupancy, estimated rate, and historical throughput.
 
-- **PRB Allocation (srsRAN)**
-  - Assigns radio resources  
+3. **AI Scheduler**
+   - Computes UE priorities using SLR, CQL, or IQL.
 
-- **Metrics → Dashboard**
-  - Visualized via Flask app
-    
+4. **PRB Allocation**
+   - The gNB allocates downlink resources.
+
+5. **Monitoring**
+   - Performance metrics are visualized through the Flask dashboard and monitored via FlexRIC.
+
+The Near-RT RIC operates as an external monitoring framework and does not directly control scheduling decisions.
+
 ---
 
-## 🧩 xApp (Near-RT RIC Monitoring & Control)
+## 🧩 xApp (Near-RT RIC Monitoring)
 
-This project integrates a **Near-Real-Time RAN Intelligent Controller (RIC)** using the **FlexRIC framework**, enabling external monitoring and control of the RAN.
+This project integrates a **Near-Real-Time RAN Intelligent Controller (RIC)** using the **FlexRIC framework**.
 
 ### 📡 What is an xApp?
 
-An **xApp** is a microservice running on the Near-RT RIC that:
-- Subscribes to RAN metrics via the **E2 interface**
-- Processes real-time data (e.g., CQI, throughput)
-- Makes intelligent decisions or recommendations
+An xApp is a lightweight application running on the Near-RT RIC that subscribes to RAN measurements through the **E2 interface**.
 
-👉 In this project, the xApp is used for:
-- **Fairness monitoring**
-- **Policy decision logging**
-- **AI-RAN experimentation**
+In this project, the xApp is used for:
 
----
+- Fairness monitoring
+- RAN metric collection
+- AI-RAN experimentation
 
 ### 🧠 Implemented xApp: Fairness Monitor
 
-- 📁 Location: flexric/examples/xApp/c/monitor/xapp_fairness_moni.c
+**Location**
 
-- ⚙️ Functionality:
-- Subscribes to **E2SM-KPM metrics** from the gNB
-- Computes:
-  - Raw Jain’s Fairness Index
-  - Normalized Jain’s Index
-  - Rolling mean and variance
-  - Fairness delta (instability indicator)
-- Detects:
-  - Balanced state
-  - Imbalance
-  - Strong imbalance
+```text
+flexric/examples/xApp/c/monitor/xapp_fairness_moni.c
+```
 
----
+**Capabilities**
 
-## 🤖 AI Scheduler
-
-The AI scheduler uses:
-
-- 📊 Features:
-  - CQI
-  - Buffer size
-  - Average throughput
-  - Historical allocation
-
-- 🎯 Output:
-  - Scheduling priority per UE
-
-- 🧠 Models:
-  - Linear Regression (baseline)
-  - Reinforcement Learning (DQN)
+- Subscribes to E2SM-KPM measurements
+- Computes Jain's Fairness Index
+- Tracks rolling fairness statistics
+- Detects fairness imbalance conditions
 
 ---
 
-## 📊 Dashboard (ran_dashboard)
+## 🤖 AI Scheduling Models
 
-A Flask-based web app that provides:
+The AI schedulers learn directly from historical scheduling decisions collected from the MAC scheduler.
 
-- Real-time throughput visualization
-- Fairness analysis (Jain’s Index)
-- UE-level performance monitoring
-- Scheduler comparison plots
+### Input Features
+
+- CQI
+- Buffer occupancy
+- Average throughput
+- Estimated rate
+- Proportional Fair metric
+
+### Implemented Models
+
+| **Model** | **Learning Approach** |
+|-----------|------------------------|
+| SLR | Supervised Learning Ranker |
+| CQL | Conservative Offline Reinforcement Learning |
+| IQL | Implicit Offline Reinforcement Learning |
+
+Offline policy evaluation showed that **IQL** most accurately recovered expert scheduling behavior, achieving the highest Top-1 recovery, strongest ranking agreement, and highest recovered reward.
 
 ---
 
-##  📊 Results and Discussion
+## 📊 Dashboard
 
-### 1️⃣ Scenario A: Heterogeneous CQI (Unequal Channel Conditions)
+The Flask dashboard provides real-time visualization of network performance.
 
-In this scenario, UEs experience significantly different channel qualities, as shown by the CQI distribution. Strong and weak users are easily distinguished.
+### Available Metrics
 
-#### 🔍 Observations
+- Cell throughput
+- Jain's Fairness Index
+- UE-level throughput
+- CQI distribution
+- Buffer occupancy
+- Scheduler comparison
 
-- Round Robin (RR) achieves the highest throughput, but at the cost of fairness
-- QoS scheduler maintains better fairness, but with lower throughput
-- DQN scheduler (AI) achieves high fairness while maintaining competitive throughput
+---
 
-  <p align="center">
-  <img src="images/UnevenCQI.png" width="80%">
-</p>
+## 📊 Experimental Evaluation
 
-#### 🧠 Insight
+Four experimental scenarios were used to evaluate scheduler performance under different channel conditions, user densities, and transmission configurations.
 
-👉 When CQI varies significantly, the DQN scheduler:
+| **Scenario** | **Configuration** |
+|-------------|-------------------|
+| **S1** | Slow fading, 5 UEs, Rank 1 |
+| **S2** | Fast fading, 5 UEs, Rank 1 |
+| **S3** | Slow fading, 10 UEs, Rank 1 |
+| **S4** | Slow fading, 5 UEs, Rank 2 |
 
-    - Prevents starvation of low-CQI users
-    - Learns a balanced fairness-throughput tradeoff
-    - Outperforms static policies
+### Scenario 1 — Slow Fading (5 UEs)
 
-### 2️⃣ Scenario B: Homogeneous CQI (Similar Channel Conditions)
+Heterogeneous channel conditions created clear CQI differences between users.
 
-In this scenario, all UEs experience similar CQI values, meaning channel conditions are nearly uniform.
+**Results**
 
-#### 🔍 Observations
-  
-    - DQN achieves the highest throughput
-    - All schedulers maintain high fairness (~0.95+)
-    - Differences arise mainly in efficiency (throughput)
-    
-<p align="center">
-  <img src="images/SimilarCQI.png" width="80%">
-</p>
-    
-    
-#### 🧠 Insight
+- SLR achieved the highest throughput.
+- QoS provided the strongest fairness and cell-edge protection.
+- IQL delivered the best overall throughput-fairness compromise.
 
-👉 When CQI differences are small:
-  
-    - Fairness is naturally satisfied
-    - The problem becomes throughput optimization
+### Scenario 2 — Fast Fading (5 UEs)
 
-#### ➡️ The DQN scheduler:
+Fast fading averaged out long-term CQI differences, producing nearly homogeneous channel conditions.
 
-Exploits small channel variations
-Achieves better spectral efficiency
+**Results**
 
-### ⚖️ Overall Takeaways
+- IQL achieved **50.14 Mbps** throughput.
+- Throughput improved by **19.5%** over RR.
+- Fairness also increased, demonstrating strong adaptation under homogeneous conditions.
 
-✅ AI adapts dynamically to network conditions
+### Scenario 3 — Slow Fading (10 UEs)
 
-✅ Improves fairness in heterogeneous scenarios
+Increasing the number of users amplified scheduling competition.
 
-✅ Maximizes throughput in homogeneous scenarios
+**Results**
 
-✅ Outperforms RR and QoS schedulers
+- IQL achieved the highest throughput.
+- QoS remained the fairest scheduler.
+- SLR prioritized throughput while reducing fairness.
+
+### Scenario 4 — Rank-2 Transmission
+
+Rank-2 transmission substantially increased available spatial capacity.
+
+**Results**
+
+- Throughput increased across all schedulers.
+- IQL achieved the highest throughput.
+- QoS remained the strongest fairness-oriented scheduler.
+
+---
+
+## 📈 Offline Policy Evaluation
+
+The learned schedulers were also evaluated against the expert replay dataset.
+
+| **Metric** | **SLR** | **CQL** | **IQL** |
+|------------|:-------:|:-------:|:-------:|
+| Top-1 Recovery | 0.710 | 0.794 | **0.955** |
+| Spearman Correlation | 0.497 | 0.577 | **0.971** |
+| Avg Reward | 0.692 | 0.712 | **0.774** |
+| Avg PRBs | 34.4 | 37.1 | **39.3** |
+
+These results demonstrate that **IQL** most faithfully reproduces expert scheduling behavior while selecting higher-quality scheduling decisions.
+
+---
+
+## ⚖️ Overall Takeaways
+
+- ✅ Offline learning successfully improves PRB allocation without requiring online exploration.
+- ✅ IQL consistently provides the strongest throughput-fairness trade-off.
+- ✅ SLR aggressively clears buffers and prioritizes throughput.
+- ✅ CQL remains close to expert scheduling behavior while providing stable improvements.
+- ✅ FlexRIC enables external monitoring without modifying scheduler control.
+- ✅ The framework provides a practical platform for AI-assisted RAN research.
 
 ---
 
@@ -207,4 +228,57 @@ Achieves better spectral efficiency
 ```bash
 git clone https://github.com/C-3DevO/Oulun_Owls-Spring_Engineering_Challenge.git
 cd Oulun_Owls-Spring_Engineering_Challenge
+```
 
+### 2. Build srsRAN
+
+```bash
+cd srsRAN_Project
+mkdir build && cd build
+cmake ..
+make -j$(nproc)
+```
+
+### 3. Start Open5GS
+
+Launch the required Open5GS core services.
+
+### 4. Run the gNB
+
+```bash
+./gnb -c ../configs/gnb_custom_cell_2.yml
+```
+
+### 5. Launch the Dashboard
+
+```bash
+cd ../../ran_dashboard
+python app.py
+```
+
+### 6. Run FlexRIC (Optional)
+
+Start the Near-RT RIC and fairness monitoring xApp.
+
+---
+
+## 📚 Technologies Used
+
+- srsRAN Project
+- Open5GS
+- FlexRIC
+- Python
+- PyTorch
+- C++
+- Flask
+- Docker
+- Git
+
+---
+
+## 👥 Authors
+
+- **Brian Kibor**
+- **Rubayet Kabir**
+
+*University of Oulu – Wireless Communications Engineering*
