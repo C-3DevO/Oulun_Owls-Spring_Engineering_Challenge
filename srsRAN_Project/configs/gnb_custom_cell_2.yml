@@ -10,8 +10,7 @@ cell_cfg:
   scheduler:
     nof_preselected_newtx_ues: 10
     policy:
-      qos_sched:
-        pf_fairness_coeff: 1.0
+      rr_sched: {}
   tac: 7
 cells:
 - channel_bandwidth_MHz: 20

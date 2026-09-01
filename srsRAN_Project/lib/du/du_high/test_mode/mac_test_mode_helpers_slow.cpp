@@ -92,8 +92,8 @@ static unsigned get_dynamic_test_cqi(rnti_t rnti)
 
   // Initialize each UE with a different starting CQI
   if (st.hold_count == 0 && st.cqi == 10) {
-    static const unsigned init_cqi_list[] = {3, 5, 8, 11, 14};
-    st.cqi = init_cqi_list[rnti_val % 5];
+    static const unsigned init_cqi_list[] = {3, 4, 5, 6, 7, 8, 9, 10, 11, 14};
+    st.cqi = init_cqi_list[rnti_val % 10];
   }
 
   st.hold_count++;

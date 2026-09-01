@@ -14,69 +14,53 @@
 
 using namespace srsran;
 
-static constexpr double action_scale[5] = {
-  0.8, 0.9, 1.0, 1.1, 1.2
-};
 
 // ============================================================================
 // Activation
 // ============================================================================
 
-inline double relu(double x)
+inline float relu(float x)
 {
-  return x > 0.0 ? x : 0.0;
+    return x > 0.0f ? x : 0.0f;
 }
 
+
 // ============================================================================
-// DQN inference
+// PriorityNet inference
 // ============================================================================
 
-int dqn_inference(const std::array<float, 4>& x)
+float dqn_inference(const std::array<float,5>& x)
 {
-  double h1[64];
+    float h1[128];
 
-  for (int i = 0; i < 64; i++) {
-    h1[i] = B1[i];
+    for (int i = 0; i < 128; i++) {
+        float s = B0[i];
 
-    for (int j = 0; j < 4; j++) {
-      h1[i] += W1[i][j] * x[j];
+        for (int j = 0; j < 5; j++)
+            s += W0[i][j] * x[j];
+
+        h1[i] = relu(s);
     }
 
-    h1[i] = relu(h1[i]);
-  }
+    float h2[128];
 
-  double h2[64];
+    for (int i = 0; i < 128; i++) {
+        float s = B1[i];
 
-  for (int i = 0; i < 64; i++) {
-    h2[i] = B2[i];
+        for (int j = 0; j < 128; j++)
+            s += W1[i][j] * h1[j];
 
-    for (int j = 0; j < 64; j++) {
-      h2[i] += W2[i][j] * h1[j];
+        h2[i] = relu(s);
     }
 
-    h2[i] = relu(h2[i]);
-  }
+    float score = B2[0];
 
-  double q[5];
+    for (int j = 0; j < 128; j++)
+        score += W2[0][j] * h2[j];
 
-  for (int i = 0; i < 5; i++) {
-    q[i] = B3[i];
-
-    for (int j = 0; j < 64; j++) {
-      q[i] += W3[i][j] * h2[j];
-    }
-  }
-
-  int best = 0;
-
-  for (int i = 1; i < 5; i++) {
-    if (q[i] > q[best]) {
-      best = i;
-    }
-  }
-
-  return best;
+    return score;
 }
+
 
 // ============================================================================
 // RL logging
@@ -136,10 +120,9 @@ void scheduler_time_ai::compute_ue_dl_priorities(
         << "avg_rate,"
         << "estimated_rate,"
         << "pf_metric,"
-        << "dqn_action,"
-        << "dqn_scale,"
         << "dqn_priority,"
         << "scheduled,"
+        << "wait_slots,"
         << "allocated_prbs,"
         << "allocated_bytes,"
         << "mcs,"
@@ -170,8 +153,6 @@ void scheduler_time_ai::compute_ue_dl_priorities(
 
     double avg_rate = ctx.total_dl_avg_rate();
 
-    double last_bytes = std::max(
-        ctx.get_last_dl_bytes(), 1.0);
 
     const search_space_id ss_id = to_search_space_id(2);
     const auto& ss_info = ue_cc.cfg().search_space(ss_id);
@@ -211,10 +192,9 @@ void scheduler_time_ai::compute_ue_dl_priorities(
           << ctx.prev_avg_rate << ","
           << ctx.prev_estimated_rate << ","
           << ctx.prev_pf_metric << ","
-          << ctx.prev_action << ","
-          << ctx.prev_scale << ","
-          << ctx.prev_priority << ","
+          << ctx.prev_priority << ","        
           << ctx.scheduled << ","
+          << ctx.wait_slots << ","
           << ctx.allocated_prbs << ","
           << ctx.allocated_bytes << ","
           << static_cast<unsigned>(ctx.mcs) << ","
@@ -226,6 +206,13 @@ void scheduler_time_ai::compute_ue_dl_priorities(
           << estimated_rate
           << "\n";
     }
+    
+    // If the UE was not scheduled in the previous slot,increase its waiting time.
+    
+    //if (ctx.allocated_bytes == 0)
+       //ctx.wait_slots++;
+    //else
+       //ctx.wait_slots = 0;
 
     // Reset outcome for the new transition.
     ctx.scheduled = false;
@@ -234,27 +221,35 @@ void scheduler_time_ai::compute_ue_dl_priorities(
     ctx.reward = 0.0;
     ctx.harq_id = 0;
     ctx.harq_retx = false;
+    
+    
 
-    // DQN state: [CQI, buffer, avg_rate, last_bytes].
-    std::array<float, 4> state = {
-        static_cast<float>(reported_cqi / 27.0),
-        static_cast<float>(buffer / 1e7),
-        static_cast<float>(avg_rate / 1000.0),
-        static_cast<float>(last_bytes / 1000.0)
-    };
+    // PriorityNet state:
+    // [CQI, log(buffer), log(avg_rate), log(estimated_rate), log(pf_metric)]
+    std::array<float, 5> state = {
+      static_cast<float>(reported_cqi / 15.0),
+      static_cast<float>(std::log1p(buffer) / 16.2),
+      static_cast<float>(std::log1p(avg_rate) / 7.3),
+      static_cast<float>(std::log1p(estimated_rate) / 8.7),
+      static_cast<float>(std::log1p(pf_metric) / 5.5)
+     };
+     
+     
+    float priority_score = dqn_inference(state);
+    if (!std::isfinite(priority_score))
+	  priority_score = 0.0f;
+	  
+    priority_score = std::clamp(priority_score, -1e6f, 1e6f);
+    
+    // Dynamic PF contribution
+    double pf_norm = std::log1p(pf_metric) / 5.5;
+    
+    // Final scheduling priority
+    double wait_bonus = std::min(ctx.wait_slots * 0.01, 0.15);
+    double final_priority = 0.8 * priority_score + 0.2 * pf_norm + wait_bonus;
+    
+    u.priority = final_priority;
 
-    int action = std::clamp(dqn_inference(state), 0, 4);
-
-    double dqn_scale = action_scale[action];
-    double dqn_priority = pf_metric * dqn_scale;
-
-    if (!std::isfinite(dqn_priority)) {
-      dqn_priority = 0.1;
-    }
-
-    dqn_priority = std::clamp(dqn_priority, 1e-6, 1e6);
-
-    u.priority = dqn_priority;
 
     // Store current state/action for the next transition.
     ctx.prev_pdsch_slot = pdsch_slot;
@@ -263,9 +258,7 @@ void scheduler_time_ai::compute_ue_dl_priorities(
     ctx.prev_avg_rate = avg_rate;
     ctx.prev_estimated_rate = estimated_rate;
     ctx.prev_pf_metric = pf_metric;
-    ctx.prev_action = action;
-    ctx.prev_scale = dqn_scale;
-    ctx.prev_priority = dqn_priority;
+    ctx.prev_priority = final_priority;
     ctx.has_prev = true;
   }
 }
@@ -365,93 +358,51 @@ void scheduler_time_ai::compute_ue_ul_priorities(
 // Save DL grants
 // ============================================================================
 
-void scheduler_time_ai::save_dl_newtx_grants(
-    span<const dl_msg_alloc> dl_grants)
+void scheduler_time_ai::save_dl_newtx_grants(span<const dl_msg_alloc> dl_grants)
 {
   if (dl_grants.empty()) {
     return;
   }
 
-  // --------------------------------------------------------------------------
-  // Process each UE grant.
-  // --------------------------------------------------------------------------
-
   for (const auto& grant : dl_grants) {
 
-    du_ue_index_t ue_id =
-        grant.context.ue_index;
+    du_ue_index_t ue_id = grant.context.ue_index;
+    ue_ctxt& ctx = ue_history_db[ue_id];
 
-    ue_ctxt& ctx =
-        ue_history_db[ue_id];
+    // Scheduling outcome.
+    ctx.scheduled = true;
 
-    // ------------------------------------------------------------------------
-    // Scheduling outcome
-    // ------------------------------------------------------------------------
-
-    ctx.scheduled =
-        true;
-
-    // ------------------------------------------------------------------------
-    // Transport block size
-    // ------------------------------------------------------------------------
-
+    // Transport block size.
     ctx.allocated_bytes =
         grant.pdsch_cfg.codewords[0].tb_size_bytes;
 
-    // ------------------------------------------------------------------------
-    // PRB allocation
-    // ------------------------------------------------------------------------
-
+    // PRB allocation.
     if (grant.pdsch_cfg.rbs.is_type1()) {
       ctx.allocated_prbs =
           grant.pdsch_cfg.rbs.type1().length();
     }
 
-    // ------------------------------------------------------------------------
-    // Actual MCS transition
-    // ------------------------------------------------------------------------
+    // Actual MCS transition.
+    ctx.prev_mcs = ctx.mcs;
+    ctx.mcs = grant.pdsch_cfg.codewords[0].mcs_index.to_uint();
 
-    ctx.prev_mcs =
-        ctx.mcs;
+    // HARQ information.
+    ctx.harq_id = grant.pdsch_cfg.harq_id;
+    ctx.harq_retx = !grant.pdsch_cfg.codewords[0].new_data;
 
-    ctx.mcs =
-        grant.pdsch_cfg.codewords[0]
-            .mcs_index.to_uint();
+    // Updates DL average throughput and wait_slots.
+    ctx.save_dl_alloc(ctx.allocated_bytes);
 
-    // ------------------------------------------------------------------------
-    // HARQ information
-    // ------------------------------------------------------------------------
+    // Throughput-oriented reward.
+    double throughput_term =
+        std::log1p(static_cast<double>(ctx.allocated_bytes)) / 10.0;
 
-    ctx.harq_id =
-        grant.pdsch_cfg.harq_id;
-
-    ctx.harq_retx =
-        !grant.pdsch_cfg.codewords[0].new_data;
-
-    // ------------------------------------------------------------------------
-    // Accumulate allocation for throughput averaging.
-    // ------------------------------------------------------------------------
-
-    ctx.save_dl_alloc(
-        ctx.allocated_bytes);
-
-    // ------------------------------------------------------------------------
-    // Reward DL bytes allocated to this UE.
-    // ------------------------------------------------------------------------
+    double efficiency_term =
+        std::min(static_cast<double>(ctx.allocated_prbs) / 51.0, 1.0);
 
     ctx.reward =
-    static_cast<double>(
-        ctx.allocated_bytes);
-
-    // ------------------------------------------------------------------------
-    // This reward belongs to the previous
-    // (state, action) transition.
-    //
-    // It will be logged during the next
-    // compute_ue_dl_priorities() call.
-    // ------------------------------------------------------------------------
-
-
+        0.8 * throughput_term +
+        0.2 * efficiency_term;
   }
 }
 
@@ -492,12 +443,17 @@ scheduler_time_ai::ue_ctxt::ue_ctxt(
 // DL allocation bookkeeping
 // ============================================================================
 
-void scheduler_time_ai::ue_ctxt::save_dl_alloc(
-    uint32_t total_alloc_bytes)
+void scheduler_time_ai::ue_ctxt::save_dl_alloc(uint32_t total_alloc_bytes)
 {
-  dl_sum_alloc_bytes +=
-      total_alloc_bytes;
+  allocated_bytes = total_alloc_bytes;
+  dl_sum_alloc_bytes += total_alloc_bytes;
+
+  if (total_alloc_bytes > 0)
+    wait_slots = 0;
+  else
+    wait_slots++;
 }
+
 
 // ============================================================================
 // UL allocation bookkeeping

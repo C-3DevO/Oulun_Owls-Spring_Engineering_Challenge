@@ -116,6 +116,17 @@ def dependencies_running(name):
 
 #--- VISUAL FUNCTIONS ----
 
+
+def to_mbps(value, unit):
+    value = float(value)
+    if unit == "G":
+        return value * 1000
+    elif unit == "M":
+        return value
+    elif unit == "k":
+        return value / 1000
+    return value
+
 def parse_gnb_log():
     log_file = processes.get("gnb_log")
     if not log_file:
@@ -132,28 +143,46 @@ def parse_gnb_log():
             #match = re.match(
              #   r"\s*\d+\s+(\d+)\s+\|\s+(\d+)\s+([\d\.]+)\s+(\d+)\s+(\d+\.?\d*)M",
               #  line)
-
-            match = re.match(
-                r"\s*\d+\s+(\d+)\s+\|\s+(\d+)\s+([\d\.]+)\s+(\d+)\s+([\d\.]+)M.*?([\d\.]+)M",
+           NUM = r"([+-]?\d+(?:\.\d+)?)"
+            
+           match = re.match(
+               rf"\s*\d+\s+([0-9A-Fa-f]+)\s+\|\s+"
+               rf"(\d+)\s+"
+               rf"{NUM}\s+"
+               rf"(\d+)\s+" 
+               rf"{NUM}([kMG])\s+"
+               rf".*?"
+               rf"{NUM}([kMG])", 
                 line
-            )
+              )
+              
+              
 
-            if match:
-                rnti = match.group(1)
-                cqi = int(match.group(2))
-                ri = float(match.group(3))
-                mcs = int(match.group(4))
-                throughput = float(match.group(5))
-                dl_bs = float(match.group(6))
 
-                ue_data[rnti] = {
-                    "rnti": rnti,
-                    "throughput": throughput,
-                    "dl_bs": dl_bs,
-                    "cqi": cqi,
-                    "ri": ri,
-                    "mcs": mcs
-                }
+           if not match:
+               if line.strip():
+                  print(f"Failed to parse: {line.rstrip()}")
+               continue
+           rnti = match.group(1)          # Hex RNTI, e.g. "4b"
+           cqi = int(match.group(2))
+           ri = float(match.group(3))
+           mcs = int(match.group(4))
+            
+           throughput = to_mbps(match.group(5), match.group(6))
+           dl_bs = to_mbps(match.group(7), match.group(8))
+              
+    
+        
+           ue_data[rnti] = {
+		    "rnti": rnti,
+		    "throughput": throughput,
+		    "dl_bs": dl_bs,
+		    "cqi": cqi,
+		    "ri": ri,
+		    "mcs": mcs
+            }
+  
+          
 
     except Exception as e:
         print("Parse error:", e)

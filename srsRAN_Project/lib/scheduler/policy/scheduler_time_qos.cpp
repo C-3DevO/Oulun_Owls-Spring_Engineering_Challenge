@@ -238,8 +238,8 @@ void scheduler_time_qos::save_ul_newtx_grants(span<const ul_sched_info> ul_grant
 
 // [Implementation-defined] Helper value to set a maximum metric weight that is low enough to avoid overflows during
 // the final QoS weight computation.
-//static constexpr double max_metric_weight = 1.0e12;
-static constexpr double max_metric_weight = 1.0e3;
+static constexpr double max_metric_weight = 1.0e12;
+//static constexpr double max_metric_weight = 1.0e3;
 
 static double compute_pf_metric(double estim_rate, double avg_rate, double fairness_coeff)
 {

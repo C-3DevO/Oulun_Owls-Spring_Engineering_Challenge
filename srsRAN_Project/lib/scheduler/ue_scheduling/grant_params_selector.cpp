@@ -29,8 +29,6 @@
 #include "../ue_context/ue_cell.h"
 #include "srsran/ran/transform_precoding/transform_precoding_helpers.h"
 
-#include <algorithm>
-
 using namespace srsran;
 using namespace sched_helper;
 
@@ -55,10 +53,7 @@ static std::optional<mcs_prbs_selection> compute_newtx_required_mcs_and_prbs(con
   const sch_mcs_index       mcs = ue_cc.link_adaptation_controller().calculate_dl_mcs(pdsch_cfg.mcs_table).value();
   const sch_mcs_description mcs_config = pdsch_mcs_get_config(pdsch_cfg.mcs_table, mcs);
 
-// **
-  unsigned scaled_bytes = std::min(pending_bytes, 2u * 1024 * 1024); // cap at 2MB
- // ** 
-  sch_prbs_tbs prbs_tbs = get_nof_prbs(prbs_calculator_sch_config{scaled_bytes,
+  sch_prbs_tbs prbs_tbs = get_nof_prbs(prbs_calculator_sch_config{pending_bytes,
                                                                   pdsch_cfg.symbols.length(),
                                                                   calculate_nof_dmrs_per_rb(pdsch_cfg.dmrs),
                                                                   pdsch_cfg.nof_oh_prb,
@@ -72,14 +67,6 @@ static std::optional<mcs_prbs_selection> compute_newtx_required_mcs_and_prbs(con
 
   // Apply min RB grant size limits (max was applied before).
   prbs_tbs.nof_prbs = std::max(prbs_tbs.nof_prbs, nof_rb_lims.start());
-  
-  // ** FORCE dl_bs → PRB impact
-  double scale = std::min(1.0, (double)pending_bytes / 5e6); // 5MB reference
-
-  prbs_tbs.nof_prbs = std::max(
-      nof_rb_lims.start(),
-      (unsigned)(prbs_tbs.nof_prbs * scale)
-  );  // **
 
   // [Implementation-defined] In case of partial slots and nof. PRBs allocated equals to 1 probability of KO is
   // high due to code not being able to cope with interference. So the solution is to increase the PRB allocation
@@ -87,11 +74,7 @@ static std::optional<mcs_prbs_selection> compute_newtx_required_mcs_and_prbs(con
   if (prbs_tbs.nof_prbs == 1 and pdsch_cfg.symbols.length() < NOF_OFDM_SYM_PER_SLOT_NORMAL_CP) {
     prbs_tbs.nof_prbs = 2;
   }
-  // **
-  //printf("UE pending=%.2f MB → PRBs=%u\n",
-       //pending_bytes / 1e6,
-       //prbs_tbs.nof_prbs);
-  // **
+
   return mcs_prbs_selection{mcs.value(), prbs_tbs.nof_prbs};
 }
 
